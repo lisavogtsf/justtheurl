@@ -22,3 +22,9 @@ Never skip the failing-test step. If asked to add a feature or fix a bug, start 
 
 - Tests load `index.html` via the filesystem and query the DOM with jsdom.
 - Keep tests focused on observable behavior (text, structure, interaction), not implementation details.
+
+## JavaScript style
+
+- **Always use semicolons** at the end of statements — no exceptions.
+- Use ES module syntax (`import`/`export`), not CommonJS (`require`/`module.exports`).
+- Prefer `const` over `let`; avoid `var`.
