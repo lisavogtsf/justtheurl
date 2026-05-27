@@ -17,6 +17,7 @@
     --border-hover: rgba(0,0,0,0.25);
     --green: #1d9e75;
     --red: #d85a30;
+    --warn: #b06a10;
     --radius: 10px;
     --radius-sm: 7px;
     --mono: ui-monospace, 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
@@ -34,6 +35,7 @@
       --border-hover: rgba(255,255,255,0.22);
       --green: #5dcaa5;
       --red: #f0997b;
+      --warn: #e8a945;
     }
   }
 
@@ -80,10 +82,17 @@
     margin-bottom: 1rem;
   }
 
+  /* Wrapper gives us the relative context for the inline × button */
+  .input-wrapper {
+    flex: 1;
+    position: relative;
+    display: flex;
+  }
+
   input[type="text"] {
     flex: 1;
     height: 40px;
-    padding: 0 12px;
+    padding: 0 30px 0 12px; /* right padding leaves room for × */
     font-family: var(--mono);
     font-size: 13px;
     color: var(--text);
@@ -93,10 +102,36 @@
     outline: none;
     transition: border-color 0.15s;
     -webkit-appearance: none;
+    width: 100%;
   }
 
   input[type="text"]::placeholder { color: var(--text-tertiary); }
   input[type="text"]:focus { border-color: var(--border-hover); }
+  input[type="text"].input-warn { border-color: var(--warn); }
+
+  /* Inline × clear button inside the input */
+  .clear-input-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none; /* shown via JS when input has content */
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-tertiary);
+    font-size: 15px;
+    line-height: 1;
+    padding: 0;
+    border-radius: 3px;
+    -webkit-appearance: none;
+  }
+
+  .clear-input-btn:hover { color: var(--text-secondary); }
 
   button.strip-btn {
     height: 40px;
@@ -145,7 +180,12 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    transition: background 0.1s;
   }
+
+  /* Clickable-to-copy when a result is present */
+  .result-box.has-result { cursor: pointer; }
+  .result-box.has-result:hover { background: var(--bg-secondary); }
 
   .result-empty {
     font-size: 14px;
@@ -220,6 +260,7 @@
   }
 
   .meta-removed { color: var(--red); }
+  .meta-warn { color: var(--warn); }
 
   .clear-btn {
     margin-left: auto;
@@ -252,12 +293,16 @@
   </div>
 
   <div class="input-row">
-    <input type="text" id="urlInput" placeholder="Paste a URL here…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="url" autofocus />
+    <div class="input-wrapper">
+      <input type="text" id="urlInput" placeholder="Paste a URL here…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="url" autofocus />
+      <button class="clear-input-btn" id="clearInputBtn" onclick="clearAll()" aria-label="Clear input">✕</button>
+    </div>
     <button class="paste-btn" id="pasteBtn" onclick="pasteFromClipboard()" aria-label="Paste from clipboard">Paste</button>
     <button class="strip-btn" onclick="strip()">Strip it</button>
   </div>
 
-  <div class="result-box">
+  <!-- aria-live announces result changes to screen readers; role="status" is polite -->
+  <div class="result-box" id="resultBox" role="status" aria-live="polite" aria-atomic="true">
     <span class="result-empty" id="emptyMsg">Your clean URL will appear here</span>
     <a class="result-url" id="resultUrl" target="_blank" rel="noopener noreferrer"></a>
     <a class="open-btn" id="openBtn" target="_blank" rel="noopener noreferrer" aria-label="Open clean URL in new tab">
@@ -283,30 +328,52 @@
 </main>
 
 <script>
-  const urlInput  = document.getElementById('urlInput');
-  const emptyMsg  = document.getElementById('emptyMsg');
-  const resultUrl = document.getElementById('resultUrl');
-  const openBtn   = document.getElementById('openBtn');
-  const copyBtn   = document.getElementById('copyBtn');
-  const copyLabel = document.getElementById('copyLabel');
-  const copyIcon  = document.getElementById('copyIcon');
-  const metaRow   = document.getElementById('metaRow');
-  const metaKept  = document.getElementById('metaKept');
-  const metaRemoved = document.getElementById('metaRemoved');
+  const urlInput      = document.getElementById('urlInput');
+  const clearInputBtn = document.getElementById('clearInputBtn');
+  const emptyMsg      = document.getElementById('emptyMsg');
+  const resultBox     = document.getElementById('resultBox');
+  const resultUrl     = document.getElementById('resultUrl');
+  const openBtn       = document.getElementById('openBtn');
+  const copyBtn       = document.getElementById('copyBtn');
+  const copyLabel     = document.getElementById('copyLabel');
+  const copyIcon      = document.getElementById('copyIcon');
+  const metaRow       = document.getElementById('metaRow');
+  const metaKept      = document.getElementById('metaKept');
+  const metaRemoved   = document.getElementById('metaRemoved');
 
   let cleanUrl = '';
 
+  // Returns true if the string plausibly looks like a URL
+  function looksLikeUrl(s) {
+    return /[./:?#]/.test(s);
+  }
+
   urlInput.addEventListener('input', () => {
-    urlInput.value.trim() ? strip() : clearAll();
+    const hasValue = urlInput.value.trim().length > 0;
+    clearInputBtn.style.display = hasValue ? 'flex' : 'none';
+    hasValue ? strip() : clearAll();
   });
 
   urlInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') strip();
+    if (e.key === 'Escape') clearAll(); // 9: Escape clears
+  });
+
+  // 5: clicking the result box copies the URL (unless clicking the Open link or result URL link)
+  resultBox.addEventListener('click', e => {
+    if (!cleanUrl) return;
+    if (openBtn.contains(e.target)) return;   // let Open navigate
+    if (resultUrl.contains(e.target)) return; // let link navigate
+    copyUrl();
   });
 
   function strip() {
     const raw = urlInput.value.trim();
     if (!raw) return;
+
+    // 7: warn if input doesn't look like a URL at all
+    const urlLike = looksLikeUrl(raw);
+    urlInput.classList.toggle('input-warn', !urlLike);
 
     const qIdx    = raw.indexOf('?');
     const hashIdx = raw.indexOf('#');
@@ -325,12 +392,15 @@
       base = raw;
     }
 
+    // 10: trim trailing slash when it's just scheme://domain/  (no real path)
+    base = base.replace(/^(https?:\/\/[^/?#]+)\/$/, '$1');
+
     cleanUrl = base + fragment;
     const paramCount = params ? params.split('&').filter(Boolean).length : 0;
-    showResult(cleanUrl, paramCount);
+    showResult(cleanUrl, paramCount, urlLike);
   }
 
-  function showResult(url, removed) {
+  function showResult(url, removed, urlLike) {
     const isAbsolute = /^https?:\/\//i.test(url);
     emptyMsg.style.display   = 'none';
     resultUrl.style.display  = 'block';
@@ -343,14 +413,22 @@
     copyBtn.classList.remove('copied');
     copyLabel.textContent    = 'Copy';
     copyIcon.innerHTML       = '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>';
+    resultBox.classList.add('has-result');
+    resultBox.title          = 'Click to copy';
     metaRow.style.display    = 'flex';
 
-    if (removed > 0) {
-      metaKept.textContent    = 'clean URL kept';
-      metaRemoved.textContent = removed + ' param' + (removed !== 1 ? 's' : '') + ' removed';
+    if (!urlLike) {
+      metaKept.textContent      = 'doesn\'t look like a URL';
+      metaKept.className        = 'meta-warn';
+      metaRemoved.style.display = 'none';
+    } else if (removed > 0) {
+      metaKept.textContent      = 'clean URL kept';
+      metaKept.className        = '';
+      metaRemoved.textContent   = removed + ' param' + (removed !== 1 ? 's' : '') + ' removed';
       metaRemoved.style.display = '';
     } else {
-      metaKept.textContent    = 'no params found — URL is already clean';
+      metaKept.textContent      = 'no params found — URL is already clean';
+      metaKept.className        = '';
       metaRemoved.style.display = 'none';
     }
   }
@@ -374,6 +452,7 @@
       const text = await navigator.clipboard.readText();
       if (text.trim()) {
         urlInput.value = text.trim();
+        clearInputBtn.style.display = 'flex';
         strip();
       }
     } catch (err) {
@@ -389,13 +468,18 @@
   }
 
   function clearAll() {
-    urlInput.value           = '';
-    cleanUrl                 = '';
-    emptyMsg.style.display   = 'block';
-    resultUrl.style.display  = 'none';
-    openBtn.style.display    = 'none';
-    copyBtn.style.display    = 'none';
-    metaRow.style.display    = 'none';
+    urlInput.value              = '';
+    urlInput.classList.remove('input-warn');
+    clearInputBtn.style.display = 'none';
+    cleanUrl                    = '';
+    emptyMsg.style.display      = 'block';
+    resultUrl.style.display     = 'none';
+    openBtn.style.display       = 'none';
+    copyBtn.style.display       = 'none';
+    resultBox.classList.remove('has-result');
+    resultBox.title             = '';
+    metaRow.style.display       = 'none';
+    urlInput.focus();
   }
 </script>
 </body>
