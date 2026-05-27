@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
 import { JSDOM } from 'jsdom';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { initApp } from '../js/app.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -73,5 +73,22 @@ describe('initApp: url stripping behavior', () => {
     input.dispatchEvent(new doc.defaultView.Event('input'));
 
     expect(doc.querySelector('output').value).toBe('https://example.com/page');
+  });
+});
+
+describe('initApp: copy button behavior', () => {
+  it('copies the stripped URL to the clipboard when the copy button is clicked', () => {
+    const doc = loadPage();
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    doc.defaultView.navigator.clipboard = { writeText };
+    initApp(doc);
+
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'https://example.com/page?foo=bar';
+    input.dispatchEvent(new doc.defaultView.Event('input'));
+
+    doc.querySelector('button#copy').click();
+
+    expect(writeText).toHaveBeenCalledWith('https://example.com/page');
   });
 });
