@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title></title>
+  <title>justtheurl</title>
   <link rel="stylesheet" href="css/styles.css">
   <script type="module">
     import { initApp } from './js/app.js';
@@ -11,9 +11,13 @@
   </script>
 </head>
 <body>
-  <h1><span class="title__word--secondary">just</span><span class="title__word--tertiary">the</span><span class="title__word--primary">url</span></h1>
-  <input type="url">
-  <output></output>
-  <button id="copy">Copy</button>
+  <h1>
+    <span class="title__word--secondary">just</span><span class="title__word--tertiary">the</span><span class="title__word--primary">url</span>
+  </h1>
+  <main>
+    <input type="url" class="url-input" placeholder="Paste a URL…">
+    <output class="url-output"></output>
+    <button id="copy" class="copy-btn">Copy</button>
+  </main>
 </body>
 </html>

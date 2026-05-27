@@ -43,6 +43,11 @@ describe('url input', () => {
     const doc = loadPage();
     expect(doc.querySelector('input[type="url"]')).not.toBeNull();
   });
+
+  it('has the class url-input', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('input.url-input')).not.toBeNull();
+  });
 });
 
 describe('result display', () => {
@@ -50,12 +55,29 @@ describe('result display', () => {
     const doc = loadPage();
     expect(doc.querySelector('output')).not.toBeNull();
   });
+
+  it('has the class url-output', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('output.url-output')).not.toBeNull();
+  });
 });
 
 describe('copy button', () => {
   it('has a copy button', () => {
     const doc = loadPage();
     expect(doc.querySelector('button#copy')).not.toBeNull();
+  });
+
+  it('has the class copy-btn', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('button.copy-btn')).not.toBeNull();
+  });
+});
+
+describe('page layout', () => {
+  it('has a main element wrapping the app', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('main')).not.toBeNull();
   });
 });
 
