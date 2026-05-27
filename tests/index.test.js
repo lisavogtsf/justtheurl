@@ -54,3 +54,10 @@ describe('result display', () => {
     expect(doc.querySelector('output')).not.toBeNull();
   });
 });
+
+describe('copy button', () => {
+  it('has a copy button', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('button#copy')).not.toBeNull();
+  });
+});
