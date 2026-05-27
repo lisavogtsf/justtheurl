@@ -85,6 +85,33 @@ main {
   max-width: 640px;
 }
 
+.input-row {
+  width: 100%;
+  display: flex;
+  gap: 0.5rem;
+
+  .url-input {
+    flex: 1;
+  }
+
+  button {
+    flex-shrink: 0;
+    background: var(--surface);
+    color: var(--text);
+    border: 1.5px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 0 0.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: border-color 0.15s;
+
+    &:hover {
+      border-color: var(--accent);
+    }
+  }
+}
+
 .url-input {
   width: 100%;
   padding: 1rem 1.25rem;

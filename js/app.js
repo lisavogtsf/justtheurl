@@ -13,6 +13,13 @@ export function initApp(doc) {
     doc.defaultView.navigator.clipboard.writeText(output.value);
   });
 
+  const pasteBtn = doc.querySelector("button#paste");
+  pasteBtn.addEventListener("click", async () => {
+    const text = await doc.defaultView.navigator.clipboard.readText();
+    input.value = text;
+    input.dispatchEvent(new doc.defaultView.Event("input"));
+  });
+
   const themeToggle = doc.querySelector("button#theme-toggle");
   const sunIcon = themeToggle.querySelector(".icon-sun");
   const moonIcon = themeToggle.querySelector(".icon-moon");

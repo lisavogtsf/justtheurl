@@ -55,6 +55,11 @@ describe('url input', () => {
     const label = doc.querySelector(`label[for="${input.id}"]`);
     expect(label).not.toBeNull();
   });
+
+  it('has a paste button', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('button#paste')).not.toBeNull();
+  });
 });
 
 describe('result display', () => {
@@ -120,6 +125,19 @@ describe('page layout', () => {
 });
 
 describe('initApp', () => {
+  it('when the paste button is clicked, reads from the clipboard and populates the input', async () => {
+    const doc = loadPage();
+    doc.defaultView.navigator.clipboard = {
+      readText: vi.fn().mockResolvedValue('https://example.com/page?foo=bar'),
+      writeText: vi.fn().mockResolvedValue(undefined),
+    };
+    initApp(doc);
+
+    await doc.querySelector('button#paste').click();
+
+    expect(doc.querySelector('input.url-input').value).toBe('https://example.com/page?foo=bar');
+  });
+
   it('when switching to light mode, sets data-theme="light" on the html element', () => {
     const doc = loadPage();
     initApp(doc);
