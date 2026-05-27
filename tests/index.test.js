@@ -49,8 +49,14 @@ describe('page title styling', () => {
   it('applies distinct opacity to each word for visual hierarchy', () => {
     const doc = loadPage();
     const styles = doc.querySelector('style').textContent;
-    expect(styles).toMatch(/span\.just[^}]*opacity:\s*0\.4/s);
-    expect(styles).toMatch(/span\.the[^}]*opacity:\s*0\.25/s);
+    expect(styles).toMatch(/span\.just[^}]*opacity:\s*0\.7/s);
+    expect(styles).toMatch(/span\.the[^}]*opacity:\s*0\.3/s);
     expect(styles).toMatch(/span\.url[^}]*opacity:\s*1/s);
+  });
+
+  it('capitalizes each word using CSS text-transform', () => {
+    const doc = loadPage();
+    const styles = doc.querySelector('style').textContent;
+    expect(styles).toMatch(/span\.url[^}]*text-transform:\s*uppercase/s);
   });
 });
