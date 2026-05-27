@@ -60,6 +60,11 @@ describe('url input', () => {
     const doc = loadPage();
     expect(doc.querySelector('button#paste')).not.toBeNull();
   });
+
+  it('has a clear button', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('button#clear')).not.toBeNull();
+  });
 });
 
 describe('result display', () => {
@@ -268,5 +273,20 @@ describe('initApp', () => {
     doc.querySelector('button#copy').click();
 
     expect(writeText).toHaveBeenCalledWith('https://example.com/page');
+  });
+
+  it('when the clear button is clicked, clears the input and output', () => {
+    const doc = loadPage();
+    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
+    initApp(doc);
+
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'https://example.com/page?foo=bar';
+    input.dispatchEvent(new doc.defaultView.Event('input'));
+
+    doc.querySelector('button#clear').click();
+
+    expect(input.value).toBe('');
+    expect(doc.querySelector('output').value).toBe('');
   });
 });
