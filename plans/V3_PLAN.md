@@ -24,11 +24,11 @@ To keep the interface simple, controls are grouped by where they belong:
 
 ## Improvements
 
-### 1. Paste button (highest mobile impact)
+### Paste button (highest mobile impact)
 
 A small icon button beside the input that reads from the clipboard and populates the field. Eliminates the long-press → "Paste" flow on mobile.
 
-Combined with auto-copy on strip (#2), the full happy path on mobile becomes: **tap Paste → done**. The URL is stripped and already in the clipboard in one tap.
+Combined with auto-copy on strip, the full happy path on mobile becomes: **tap Paste → done**. The URL is stripped and already in the clipboard in one tap.
 
 Uses `navigator.clipboard.readText()`. May prompt for clipboard-read permission on first use — this is expected browser behaviour.
 
@@ -36,7 +36,7 @@ Uses `navigator.clipboard.readText()`. May prompt for clipboard-read permission 
 
 ---
 
-### 2. Auto-copy on strip
+### Auto-copy on strip
 
 When a URL is stripped, copy it to the clipboard immediately — no extra tap required. The Copy button becomes a visible fallback for re-copying.
 
@@ -46,7 +46,7 @@ When a URL is stripped, copy it to the clipboard immediately — no extra tap re
 
 ---
 
-### 3. Copy feedback
+### Copy feedback
 
 After copying (auto or manual), the Copy button briefly shows "Copied ✓" for ~2 seconds, then reverts. On mobile there is no hover state, so users need an explicit signal the action succeeded.
 
@@ -54,7 +54,7 @@ After copying (auto or manual), the Copy button briefly shows "Copied ✓" for ~
 
 ---
 
-### 4. Open button
+### Open button
 
 A button beside Copy that opens the stripped URL in a new tab. Useful when the user wants to verify the destination or navigate directly without pasting elsewhere.
 
@@ -64,7 +64,7 @@ Should be disabled or hidden when there is no stripped URL.
 
 ---
 
-### 5. Clear button (✕) inside the input
+### Clear button (✕) inside the input
 
 A small ✕ button inside the input field to quickly reset without reloading. Appears only when the input has a value.
 
@@ -72,7 +72,7 @@ A small ✕ button inside the input field to quickly reset without reloading. Ap
 
 ---
 
-### 6. Add a `<label>` for the URL input
+### Add a `<label>` for the URL input
 
 Currently the input has no associated `<label>`. Screen readers have no way to describe what the field is for. The label can be visually hidden with a `.sr-only` class so it doesn't affect the visual design.
 
@@ -80,7 +80,7 @@ Currently the input has no associated `<label>`. Screen readers have no way to d
 
 ---
 
-### 7. `aria-live="polite"` on the output
+### `aria-live="polite"` on the output
 
 Screen readers won't announce changes to the output element without this. Adding it means the stripped URL is read aloud automatically when it appears.
 
@@ -88,7 +88,7 @@ Screen readers won't announce changes to the output element without this. Adding
 
 ---
 
-### 8. Auto-focus the input
+### Auto-focus the input
 
 Focus the input on page load so users who prefer to manually type or long-press paste don't have to tap the field first. Complements the paste button — two paths to the same starting point.
 
@@ -96,7 +96,7 @@ Focus the input on page load so users who prefer to manually type or long-press 
 
 ---
 
-### 9. Input font size ≥ 16px
+### Input font size ≥ 16px
 
 iOS Safari auto-zooms the page when a focused input has a font size below 16px. This is disorienting on mobile.
 
