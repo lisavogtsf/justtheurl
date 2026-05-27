@@ -36,6 +36,11 @@ export function initApp(doc) {
     input.dispatchEvent(new doc.defaultView.Event("input"));
   });
 
+  const openBtn = doc.querySelector("button#open");
+  openBtn.addEventListener("click", () => {
+    if (output.value) doc.defaultView.open(output.value, "_blank");
+  });
+
   const themeToggle = doc.querySelector("button#theme-toggle");
   const sunIcon = themeToggle.querySelector(".icon-sun");
   const moonIcon = themeToggle.querySelector(".icon-moon");

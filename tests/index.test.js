@@ -131,6 +131,13 @@ describe('page layout', () => {
   });
 });
 
+describe('open button', () => {
+  it('has an open button', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('button#open')).not.toBeNull();
+  });
+});
+
 describe('initApp', () => {
   it('when the paste button is clicked, reads from the clipboard and populates the input', async () => {
     const doc = loadPage();
@@ -143,6 +150,21 @@ describe('initApp', () => {
     await doc.querySelector('button#paste').click();
 
     expect(doc.querySelector('input.url-input').value).toBe('https://example.com/page?foo=bar');
+  });
+
+  it('when the open button is clicked, opens the stripped URL in a new tab', () => {
+    const doc = loadPage();
+    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
+    const open = vi.fn();
+    doc.defaultView.open = open;
+    initApp(doc);
+
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'https://example.com/page?foo=bar';
+    input.dispatchEvent(new doc.defaultView.Event('input'));
+    doc.querySelector('button#open').click();
+
+    expect(open).toHaveBeenCalledWith('https://example.com/page', '_blank');
   });
 
   it('when switching to light mode, sets data-theme="light" on the html element', () => {
