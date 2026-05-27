@@ -5,12 +5,28 @@ export function initApp(doc) {
   const output = doc.querySelector("output");
   const copyBtn = doc.querySelector("button#copy");
 
+  const copyLabel = copyBtn.querySelector(".copy-label");
+
+  function copyToClipboard(text) {
+    doc.defaultView.navigator.clipboard.writeText(text).catch(() => {});
+  }
+
+  function showCopiedFeedback() {
+    copyLabel.textContent = "Copied ✓";
+    setTimeout(() => {
+      copyLabel.textContent = "Copy";
+    }, 2000);
+  }
+
   input.addEventListener("input", () => {
-    output.value = stripQueryParams(input.value);
+    const stripped = stripQueryParams(input.value);
+    output.value = stripped;
+    if (stripped) copyToClipboard(stripped);
   });
 
   copyBtn.addEventListener("click", () => {
-    doc.defaultView.navigator.clipboard.writeText(output.value);
+    copyToClipboard(output.value);
+    showCopiedFeedback();
   });
 
   const pasteBtn = doc.querySelector("button#paste");

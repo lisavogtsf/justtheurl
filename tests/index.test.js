@@ -94,6 +94,13 @@ describe('copy button', () => {
     const doc = loadPage();
     expect(doc.querySelector('button#copy svg')).not.toBeNull();
   });
+
+  it('has a copy-label span with text "Copy"', () => {
+    const doc = loadPage();
+    const label = doc.querySelector('button#copy .copy-label');
+    expect(label).not.toBeNull();
+    expect(label.textContent).toBe('Copy');
+  });
 });
 
 describe('page layout', () => {
@@ -173,6 +180,19 @@ describe('initApp', () => {
   });
 
 
+  it('when the input changes, auto-copies the stripped URL to the clipboard', () => {
+    const doc = loadPage();
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    doc.defaultView.navigator.clipboard = { writeText };
+    initApp(doc);
+
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'https://example.com/page?foo=bar';
+    input.dispatchEvent(new doc.defaultView.Event('input'));
+
+    expect(writeText).toHaveBeenCalledWith('https://example.com/page');
+  });
+
   it('when the input changes, displays the stripped URL in the output', () => {
     const doc = loadPage();
     initApp(doc);
@@ -182,6 +202,35 @@ describe('initApp', () => {
     input.dispatchEvent(new doc.defaultView.Event('input'));
 
     expect(doc.querySelector('output').value).toBe('https://example.com/page');
+  });
+
+  it('when the copy button is clicked, shows "Copied ✓" on the button label', () => {
+    const doc = loadPage();
+    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
+    initApp(doc);
+
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'https://example.com/page?foo=bar';
+    input.dispatchEvent(new doc.defaultView.Event('input'));
+    doc.querySelector('button#copy').click();
+
+    expect(doc.querySelector('button#copy .copy-label').textContent).toBe('Copied ✓');
+  });
+
+  it('copy button label reverts to "Copy" after 2 seconds', () => {
+    vi.useFakeTimers();
+    const doc = loadPage();
+    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
+    initApp(doc);
+
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'https://example.com/page?foo=bar';
+    input.dispatchEvent(new doc.defaultView.Event('input'));
+    doc.querySelector('button#copy').click();
+
+    vi.advanceTimersByTime(2000);
+    expect(doc.querySelector('button#copy .copy-label').textContent).toBe('Copy');
+    vi.useRealTimers();
   });
 
   it('when the copy button is clicked, copies the stripped URL to the clipboard', () => {
