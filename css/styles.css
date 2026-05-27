@@ -235,6 +235,10 @@ main {
   border: 2px solid var(--accent);
   border-radius: 999px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
   transition:
     background 0.15s,
     color 0.15s,

@@ -141,6 +141,11 @@ describe('open button', () => {
     const doc = loadPage();
     expect(doc.querySelector('button#open')).not.toBeNull();
   });
+
+  it('contains an SVG icon', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('button#open svg')).not.toBeNull();
+  });
 });
 
 describe('initApp', () => {
