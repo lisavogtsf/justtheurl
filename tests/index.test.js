@@ -47,3 +47,10 @@ describe('url input', () => {
     expect(doc.querySelector('input[type="url"]')).not.toBeNull();
   });
 });
+
+describe('result display', () => {
+  it('has a result display area', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('output')).not.toBeNull();
+  });
+});
