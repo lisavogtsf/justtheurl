@@ -23,8 +23,9 @@ Never skip the failing-test step. If asked to add a feature or fix a bug, start 
 - Tests load `index.html` via the filesystem and query the DOM with jsdom.
 - Keep tests focused on observable behavior (text, structure, interaction), not implementation details.
 
-## JavaScript style
+## Code style
 
-- **Always use semicolons** at the end of statements — no exceptions.
+- **Formatter: Prettier.** All files (JS, CSS, HTML) should follow Prettier's default output. Do not write code that would conflict with Prettier formatting.
+- **Always use semicolons** at the end of JavaScript statements — no exceptions.
 - Use ES module syntax (`import`/`export`), not CommonJS (`require`/`module.exports`).
 - Prefer `const` over `let`; avoid `var`.
