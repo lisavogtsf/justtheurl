@@ -117,6 +117,25 @@
   button.strip-btn:hover { background: var(--bg-secondary); border-color: var(--border-hover); }
   button.strip-btn:active { transform: scale(0.98); }
 
+  button.paste-btn {
+    height: 40px;
+    padding: 0 18px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.1s, border-color 0.1s;
+    -webkit-appearance: none;
+  }
+
+  button.paste-btn:hover { background: var(--bg-secondary); border-color: var(--border-hover); }
+  button.paste-btn:active { transform: scale(0.98); }
+
   .result-box {
     background: var(--bg-secondary);
     border: 0.5px solid var(--border);
@@ -210,6 +229,7 @@
 
   <div class="input-row">
     <input type="text" id="urlInput" placeholder="Paste a URL here…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="url" autofocus />
+    <button class="paste-btn" id="pasteBtn" onclick="pasteFromClipboard()" aria-label="Paste from clipboard">Paste</button>
     <button class="strip-btn" onclick="strip()">Strip it</button>
   </div>
 
@@ -313,6 +333,25 @@
         copyIcon.innerHTML = '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>';
       }, 2000);
     });
+  }
+
+  async function pasteFromClipboard() {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text.trim()) {
+        urlInput.value = text.trim();
+        strip();
+      }
+    } catch (err) {
+      // Permission denied or API unavailable — focus input so user can paste manually
+      urlInput.focus();
+      urlInput.select();
+    }
+  }
+
+  // Hide Paste button if clipboard read API is unavailable (e.g. non-secure context)
+  if (!navigator.clipboard || typeof navigator.clipboard.readText !== 'function') {
+    document.getElementById('pasteBtn').style.display = 'none';
   }
 
   function clearAll() {
