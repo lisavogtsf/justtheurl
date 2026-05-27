@@ -72,6 +72,11 @@ describe('copy button', () => {
     const doc = loadPage();
     expect(doc.querySelector('button.copy-btn')).not.toBeNull();
   });
+
+  it('contains an SVG icon', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('button#copy svg')).not.toBeNull();
+  });
 });
 
 describe('page layout', () => {

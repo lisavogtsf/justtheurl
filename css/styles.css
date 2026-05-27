@@ -96,12 +96,31 @@ main {
 
 .url-output {
   width: 100%;
-  min-height: 1.5rem;
+  min-height: 3.5rem;
+  padding: 1rem 1.25rem;
   font-size: 1.1rem;
   font-weight: 500;
   color: var(--accent);
   word-break: break-all;
   text-align: center;
+  border: 1.5px dashed var(--border);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s;
+
+  &:not(:empty) {
+    border-style: solid;
+    border-color: var(--accent);
+  }
+
+  &:empty::before {
+    content: '[stripped URL will appear here]';
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
 }
 
 #theme-toggle {
@@ -122,20 +141,32 @@ main {
   &:hover {
     border-color: var(--accent);
   }
+}
 
 .copy-btn {
-  padding: 0.75rem 2.5rem;
-  font-size: 0.95rem;
+  width: 100%;
+  padding: 0.9rem 2.5rem;
+  font-size: 1rem;
   font-family: inherit;
   font-weight: 600;
   background: var(--accent);
   color: #fff;
   border: none;
-  border-radius: 0.5rem;
+  border-radius: 999px;
   cursor: pointer;
-  transition: background 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  transition:
+    background 0.15s,
+    transform 0.1s;
 
   &:hover {
     background: var(--accent-hover);
+  }
+
+  &:active {
+    transform: scale(0.97);
   }
 }
