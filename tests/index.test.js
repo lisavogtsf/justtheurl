@@ -13,14 +13,12 @@ function loadPage() {
   return new JSDOM(html).window.document;
 }
 
-describe('index.html', () => {
+describe('page title', () => {
   it('contains the text "justtheurl"', () => {
     const doc = loadPage();
     expect(doc.body.textContent).toContain('justtheurl');
   });
-});
 
-describe('page title', () => {
   it('displays the title as an h1 with "just", "the", and "url" as three distinct spans', () => {
     const doc = loadPage();
     const h1 = doc.querySelector('h1');
@@ -31,9 +29,7 @@ describe('page title', () => {
     expect(words[1].textContent).toBe('the');
     expect(words[2].textContent).toBe('url');
   });
-});
 
-describe('page title styling', () => {
   it('gives each word span a distinct BEM class for individual styling', () => {
     const doc = loadPage();
     expect(doc.querySelector('h1 span.title__word--primary')).not.toBeNull();
@@ -63,8 +59,8 @@ describe('copy button', () => {
   });
 });
 
-describe('initApp: url stripping behavior', () => {
-  it('displays the stripped URL in the output when input changes', () => {
+describe('initApp', () => {
+  it('when the input changes, displays the stripped URL in the output', () => {
     const doc = loadPage();
     initApp(doc);
 
@@ -74,10 +70,8 @@ describe('initApp: url stripping behavior', () => {
 
     expect(doc.querySelector('output').value).toBe('https://example.com/page');
   });
-});
 
-describe('initApp: copy button behavior', () => {
-  it('copies the stripped URL to the clipboard when the copy button is clicked', () => {
+  it('when the copy button is clicked, copies the stripped URL to the clipboard', () => {
     const doc = loadPage();
     const writeText = vi.fn().mockResolvedValue(undefined);
     doc.defaultView.navigator.clipboard = { writeText };
