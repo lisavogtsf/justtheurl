@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>justtheurl</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --bg-secondary: #f5f5f3;
+    --text: #1a1a18;
+    --text-secondary: #6b6b67;
+    --text-tertiary: #9e9e9a;
+    --border: rgba(0,0,0,0.12);
+    --border-hover: rgba(0,0,0,0.25);
+    --green: #1d9e75;
+    --red: #d85a30;
+    --radius: 10px;
+    --radius-sm: 7px;
+    --mono: ui-monospace, 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a;
+      --bg-secondary: #252523;
+      --text: #f0ede8;
+      --text-secondary: #a0a09c;
+      --text-tertiary: #6b6b67;
+      --border: rgba(255,255,255,0.1);
+      --border-hover: rgba(255,255,255,0.22);
+      --green: #5dcaa5;
+      --red: #f0997b;
+    }
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.25rem;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 560px;
+  }
+
+  .brand {
+    margin-bottom: 2.25rem;
+  }
+
+  .brand-name {
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+
+  .brand-name span {
+    color: var(--text-tertiary);
+  }
+
+  .brand-tag {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 1rem;
+  }
+
+  input[type="text"] {
+    flex: 1;
+    height: 40px;
+    padding: 0 12px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text);
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    outline: none;
+    transition: border-color 0.15s;
+    -webkit-appearance: none;
+  }
+
+  input[type="text"]::placeholder { color: var(--text-tertiary); }
+  input[type="text"]:focus { border-color: var(--border-hover); }
+
+  button.strip-btn {
+    height: 40px;
+    padding: 0 18px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    background: transparent;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.1s, border-color 0.1s;
+    -webkit-appearance: none;
+  }
+
+  button.strip-btn:hover { background: var(--bg-secondary); border-color: var(--border-hover); }
+  button.strip-btn:active { transform: scale(0.98); }
+
+  .result-box {
+    background: var(--bg-secondary);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    min-height: 68px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .result-empty {
+    font-size: 14px;
+    color: var(--text-tertiary);
+    flex: 1;
+  }
+
+  .result-url {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text);
+    word-break: break-all;
+    flex: 1;
+    line-height: 1.5;
+    display: none;
+  }
+
+  button.copy-btn {
+    flex-shrink: 0;
+    display: none;
+    align-items: center;
+    gap: 5px;
+    height: 32px;
+    padding: 0 12px;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--text);
+    background: transparent;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.1s;
+    -webkit-appearance: none;
+  }
+
+  button.copy-btn:hover { background: var(--bg); }
+  button.copy-btn.copied { color: var(--green); border-color: var(--green); }
+
+  .copy-icon { width: 15px; height: 15px; }
+
+  .meta {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    margin-top: 0.6rem;
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+
+  .meta-removed { color: var(--red); }
+
+  .clear-btn {
+    margin-left: auto;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: var(--sans);
+    color: var(--text-tertiary);
+    padding: 0;
+    -webkit-appearance: none;
+  }
+
+  .clear-btn:hover { color: var(--text-secondary); }
+
+  .footer {
+    margin-top: 2.5rem;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<main class="card">
+
+  <div class="brand">
+    <div class="brand-name">just<span>the</span>url</div>
+    <div class="brand-tag">strip everything after the ?</div>
+  </div>
+
+  <div class="input-row">
+    <input type="text" id="urlInput" placeholder="Paste a URL here…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+    <button class="strip-btn" onclick="strip()">Strip it</button>
+  </div>
+
+  <div class="result-box">
+    <span class="result-empty" id="emptyMsg">Your clean URL will appear here</span>
+    <span class="result-url" id="resultUrl"></span>
+    <button class="copy-btn" id="copyBtn" onclick="copyUrl()" aria-label="Copy clean URL">
+      <svg class="copy-icon" id="copyIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+      </svg>
+      <span id="copyLabel">Copy</span>
+    </button>
+  </div>
+
+  <div class="meta" id="metaRow">
+    <span id="metaKept"></span>
+    <span class="meta-removed" id="metaRemoved"></span>
+    <button class="clear-btn" onclick="clearAll()">clear</button>
+  </div>
+
+  <p class="footer">runs locally &mdash; nothing is sent anywhere</p>
+
+</main>
+
+<script>
+  const urlInput  = document.getElementById('urlInput');
+  const emptyMsg  = document.getElementById('emptyMsg');
+  const resultUrl = document.getElementById('resultUrl');
+  const copyBtn   = document.getElementById('copyBtn');
+  const copyLabel = document.getElementById('copyLabel');
+  const copyIcon  = document.getElementById('copyIcon');
+  const metaRow   = document.getElementById('metaRow');
+  const metaKept  = document.getElementById('metaKept');
+  const metaRemoved = document.getElementById('metaRemoved');
+
+  let cleanUrl = '';
+
+  urlInput.addEventListener('input', () => {
+    urlInput.value.trim() ? strip() : clearAll();
+  });
+
+  urlInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') strip();
+  });
+
+  function strip() {
+    const raw = urlInput.value.trim();
+    if (!raw) return;
+
+    const qIdx    = raw.indexOf('?');
+    const hashIdx = raw.indexOf('#');
+    let base, params = '', fragment = '';
+
+    if (qIdx !== -1) {
+      base = raw.slice(0, qIdx);
+      const rest = raw.slice(qIdx + 1);
+      const hIdx = rest.indexOf('#');
+      if (hIdx !== -1) { params = rest.slice(0, hIdx); fragment = rest.slice(hIdx); }
+      else { params = rest; }
+    } else if (hashIdx !== -1) {
+      base = raw.slice(0, hashIdx);
+      fragment = raw.slice(hashIdx);
+    } else {
+      base = raw;
+    }
+
+    cleanUrl = base + fragment;
+    const paramCount = params ? params.split('&').filter(Boolean).length : 0;
+    showResult(cleanUrl, paramCount);
+  }
+
+  function showResult(url, removed) {
+    emptyMsg.style.display   = 'none';
+    resultUrl.style.display  = 'block';
+    resultUrl.textContent    = url;
+    copyBtn.style.display    = 'flex';
+    copyBtn.classList.remove('copied');
+    copyLabel.textContent    = 'Copy';
+    copyIcon.innerHTML       = '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>';
+    metaRow.style.display    = 'flex';
+
+    if (removed > 0) {
+      metaKept.textContent    = 'clean URL kept';
+      metaRemoved.textContent = removed + ' param' + (removed !== 1 ? 's' : '') + ' removed';
+      metaRemoved.style.display = '';
+    } else {
+      metaKept.textContent    = 'no params found — URL is already clean';
+      metaRemoved.style.display = 'none';
+    }
+  }
+
+  function copyUrl() {
+    if (!cleanUrl) return;
+    navigator.clipboard.writeText(cleanUrl).then(() => {
+      copyBtn.classList.add('copied');
+      copyLabel.textContent = 'Copied';
+      copyIcon.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
+      setTimeout(() => {
+        copyBtn.classList.remove('copied');
+        copyLabel.textContent = 'Copy';
+        copyIcon.innerHTML = '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>';
+      }, 2000);
+    });
+  }
+
+  function clearAll() {
+    urlInput.value           = '';
+    cleanUrl                 = '';
+    emptyMsg.style.display   = 'block';
+    resultUrl.style.display  = 'none';
+    copyBtn.style.display    = 'none';
+    metaRow.style.display    = 'none';
+  }
+</script>
+</body>
+</html>
