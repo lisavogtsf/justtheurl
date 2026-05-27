@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
 import { JSDOM } from 'jsdom';
 import { describe, it, expect } from 'vitest';
+import { initApp } from '../js/app.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -59,5 +60,18 @@ describe('copy button', () => {
   it('has a copy button', () => {
     const doc = loadPage();
     expect(doc.querySelector('button#copy')).not.toBeNull();
+  });
+});
+
+describe('initApp: url stripping behavior', () => {
+  it('displays the stripped URL in the output when input changes', () => {
+    const doc = loadPage();
+    initApp(doc);
+
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'https://example.com/page?foo=bar&baz=qux';
+    input.dispatchEvent(new doc.defaultView.Event('input'));
+
+    expect(doc.querySelector('output').value).toBe('https://example.com/page');
   });
 });
