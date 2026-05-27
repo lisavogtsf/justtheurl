@@ -2,77 +2,113 @@
 
 ## Context
 
-The core mobile use case is: copy a URL from another app → open justtheurl → paste → copy the clean result → done. Every extra tap is friction. V3 focuses on removing that friction and filling accessibility gaps.
+The core mobile use case is: copy a URL from another app → open justtheurl → strip it → use the clean result. Every extra tap is friction. V3 focuses on removing that friction and filling accessibility gaps.
+
+---
+
+## UI structure
+
+To keep the interface simple, controls are grouped by where they belong:
+
+```
+[ URL input field                    ] [ Paste ] [ ✕ ]
+[ stripped URL will appear here          ]
+[ Copy ]  [ Open ]
+```
+
+- **Paste** and **✕** (clear) are small icon buttons that live with the input
+- **Copy** and **Open** are paired action buttons that live below the output
+- No action is more than one tap away
 
 ---
 
 ## Improvements
 
-### 1. Auto-copy on strip (highest impact)
+### 1. Paste button (highest mobile impact)
 
-When the URL is stripped, copy it to the clipboard immediately — no button tap required in the happy path. The copy button stays as a visible fallback for re-copying.
+A small icon button beside the input that reads from the clipboard and populates the field. Eliminates the long-press → "Paste" flow on mobile.
 
-**Why:** On mobile, switching between apps to paste and then having to tap "Copy" is the biggest point of friction. Eliminating it makes the tool feel instant.
+Combined with auto-copy on strip (#2), the full happy path on mobile becomes: **tap Paste → done**. The URL is stripped and already in the clipboard in one tap.
 
-**Caveat:** `navigator.clipboard.writeText()` requires a user-initiated event. The `input` event qualifies in modern mobile browsers, but we should test and fall back gracefully if it fails.
+Uses `navigator.clipboard.readText()`. May prompt for clipboard-read permission on first use — this is expected browser behaviour.
 
----
-
-### 2. Copy feedback
-
-The copy button (and auto-copy) should briefly show a "Copied ✓" state for ~2 seconds, then revert to "Copy". On mobile there is no hover state, so users need an explicit signal that the action succeeded.
-
-**Testable:** We can test that the button label changes after a copy action.
+**Testable:** Test that a paste button element exists.
 
 ---
 
-### 3. Add a `<label>` for the URL input
+### 2. Auto-copy on strip
 
-Currently the input has no associated `<label>`. This is an accessibility gap — screen readers have no way to describe what the field is for.
+When a URL is stripped, copy it to the clipboard immediately — no extra tap required. The Copy button becomes a visible fallback for re-copying.
 
-The label can be visually hidden (using a `.sr-only` utility class) so it doesn't affect the visual design.
+**Caveat:** `navigator.clipboard.writeText()` requires a user-initiated event. The `input` event qualifies in modern mobile browsers, but we should fall back gracefully if it fails.
 
-**Testable:** Test that a `<label>` element exists and is associated with the input via `for`/`id`.
-
----
-
-### 4. `aria-live="polite"` on the output
-
-The `<output>` element currently changes value when a URL is stripped, but screen readers won't announce this without `aria-live="polite"`. Adding it means the stripped URL is read aloud automatically.
-
-**Testable:** Test that the output element has the `aria-live` attribute.
+**Testable:** We can test that the clipboard is written when the input changes.
 
 ---
 
-### 5. Input font size ≥ 16px
+### 3. Copy feedback
 
-iOS Safari auto-zooms the page when a focused input has a font size below 16px. This is disorienting on mobile. We should confirm our input meets this threshold and fix it if not.
+After copying (auto or manual), the Copy button briefly shows "Copied ✓" for ~2 seconds, then reverts. On mobile there is no hover state, so users need an explicit signal the action succeeded.
 
-**Not testable** (CSS value) — visual/manual check.
+**Testable:** Test that the button text changes after a copy action.
 
 ---
 
-### 6. Clear button inside the input
+### 4. Open button
 
-A small ✕ button inside the input field lets users reset without reloading the page. It should only appear when the input has a value.
+A button beside Copy that opens the stripped URL in a new tab. Useful when the user wants to verify the destination or navigate directly without pasting elsewhere.
+
+Should be disabled or hidden when there is no stripped URL.
+
+**Testable:** Test that an open button element exists.
+
+---
+
+### 5. Clear button (✕) inside the input
+
+A small ✕ button inside the input field to quickly reset without reloading. Appears only when the input has a value.
 
 **Testable:** Test that a clear button element exists.
 
 ---
 
-### 7. Auto-focus the input
+### 6. Add a `<label>` for the URL input
 
-Focus the input on page load so that a mobile user arriving on the page can paste immediately without tapping the field first.
+Currently the input has no associated `<label>`. Screen readers have no way to describe what the field is for. The label can be visually hidden with a `.sr-only` class so it doesn't affect the visual design.
 
-This is debatable — auto-focus opens the keyboard on mobile, which can be jarring. But for a paste-and-go tool, arriving keyboard-ready is likely a net positive.
+**Testable:** Test that a `<label>` element is associated with the input via `for`/`id`.
+
+---
+
+### 7. `aria-live="polite"` on the output
+
+Screen readers won't announce changes to the output element without this. Adding it means the stripped URL is read aloud automatically when it appears.
+
+**Testable:** Test that the output element has the `aria-live` attribute.
+
+---
+
+### 8. Auto-focus the input
+
+Focus the input on page load so users who prefer to manually type or long-press paste don't have to tap the field first. Complements the paste button — two paths to the same starting point.
 
 **Not testable** in jsdom (focus state isn't meaningful without a real browser).
+
+---
+
+### 9. Input font size ≥ 16px
+
+iOS Safari auto-zooms the page when a focused input has a font size below 16px. This is disorienting on mobile.
+
+**Not testable** (CSS value) — visual/manual check.
 
 ---
 
 ## Order of implementation
 
 1. Label + aria-live (accessibility gaps, low complexity)
-2. Auto-copy on strip + copy feedback (highest UX impact)
-3. Clear button
-4. Auto-focus + font size check (simple, last)
+2. Paste button (highest mobile UX impact)
+3. Auto-copy on strip + copy feedback
+4. Open button
+5. Clear button
+6. Auto-focus + font size check (simple, last)
