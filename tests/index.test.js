@@ -90,7 +90,12 @@ describe('page layout', () => {
     expect(doc.querySelector('button#theme-toggle svg')).not.toBeNull();
   });
 
-  it('shows the sun icon and hides the moon icon by default', () => {
+  it('dark mode is the default (no data-theme attribute on the html element)', () => {
+    const doc = loadPage();
+    expect(doc.documentElement.getAttribute('data-theme')).toBeNull();
+  });
+
+  it('in dark mode by default, shows the sun icon and hides the moon icon in the toggle', () => {
     const doc = loadPage();
     expect(doc.querySelector('#theme-toggle .icon-sun').hasAttribute('hidden')).toBe(false);
     expect(doc.querySelector('#theme-toggle .icon-moon').hasAttribute('hidden')).toBe(true);
@@ -98,14 +103,22 @@ describe('page layout', () => {
 });
 
 describe('initApp', () => {
-  it('when the theme toggle is clicked, sets data-theme="light" on the html element', () => {
+  it('when switching to light mode, sets data-theme="light" on the html element', () => {
     const doc = loadPage();
     initApp(doc);
     doc.querySelector('button#theme-toggle').click();
     expect(doc.documentElement.getAttribute('data-theme')).toBe('light');
   });
 
-  it('when the theme toggle is clicked twice, removes data-theme from the html element', () => {
+  it('when switching to light mode, shows the moon icon and hides the sun icon in the toggle', () => {
+    const doc = loadPage();
+    initApp(doc);
+    doc.querySelector('#theme-toggle').click();
+    expect(doc.querySelector('#theme-toggle .icon-moon').hasAttribute('hidden')).toBe(false);
+    expect(doc.querySelector('#theme-toggle .icon-sun').hasAttribute('hidden')).toBe(true);
+  });
+
+  it('when switching back to dark mode, removes data-theme from the html element', () => {
     const doc = loadPage();
     initApp(doc);
     const toggle = doc.querySelector('button#theme-toggle');
@@ -114,15 +127,7 @@ describe('initApp', () => {
     expect(doc.documentElement.getAttribute('data-theme')).toBeNull();
   });
 
-  it('when the theme toggle is clicked, shows the moon icon and hides the sun icon', () => {
-    const doc = loadPage();
-    initApp(doc);
-    doc.querySelector('#theme-toggle').click();
-    expect(doc.querySelector('#theme-toggle .icon-moon').hasAttribute('hidden')).toBe(false);
-    expect(doc.querySelector('#theme-toggle .icon-sun').hasAttribute('hidden')).toBe(true);
-  });
-
-  it('when the theme toggle is clicked twice, shows the sun icon and hides the moon icon again', () => {
+  it('when switching back to dark mode, shows the sun icon and hides the moon icon in the toggle', () => {
     const doc = loadPage();
     initApp(doc);
     const toggle = doc.querySelector('#theme-toggle');
