@@ -22,6 +22,7 @@ Never skip the failing-test step. If asked to add a feature or fix a bug, start 
 
 - Tests load `index.html` via the filesystem and query the DOM with jsdom.
 - Keep tests focused on observable behavior (text, structure, interaction), not implementation details.
+- Add new tests to the **end** of the test file by default. The only exception is when a new test directly relates to an existing `describe` block — in that case, add it inside that block to keep related behavior grouped. Never insert a new `describe` block above existing ones.
 
 ## Code style
 
