@@ -48,6 +48,13 @@ describe('url input', () => {
     const doc = loadPage();
     expect(doc.querySelector('input.url-input')).not.toBeNull();
   });
+
+  it('has an associated label', () => {
+    const doc = loadPage();
+    const input = doc.querySelector('input.url-input');
+    const label = doc.querySelector(`label[for="${input.id}"]`);
+    expect(label).not.toBeNull();
+  });
 });
 
 describe('result display', () => {
@@ -59,6 +66,11 @@ describe('result display', () => {
   it('has the class url-output', () => {
     const doc = loadPage();
     expect(doc.querySelector('output.url-output')).not.toBeNull();
+  });
+
+  it('has aria-live="polite" for screen reader announcements', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('output').getAttribute('aria-live')).toBe('polite');
   });
 });
 

@@ -27,8 +27,9 @@
     </svg>
   </button>
   <main>
-    <input type="url" class="url-input" placeholder="Paste a URL…">
-    <output class="url-output"></output>
+    <label for="url-input" class="sr-only">URL to strip</label>
+    <input type="url" id="url-input" class="url-input" placeholder="Paste a URL…">
+    <output class="url-output" aria-live="polite"></output>
     <button id="copy" class="copy-btn">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="9" y="9" width="13" height="13" rx="2"/>
