@@ -79,9 +79,36 @@ describe('page layout', () => {
     const doc = loadPage();
     expect(doc.querySelector('main')).not.toBeNull();
   });
+
+  it('has a theme toggle button', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('button#theme-toggle')).not.toBeNull();
+  });
+
+  it('theme toggle button contains an SVG icon', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('button#theme-toggle svg')).not.toBeNull();
+  });
 });
 
 describe('initApp', () => {
+  it('when the theme toggle is clicked, sets data-theme="light" on the html element', () => {
+    const doc = loadPage();
+    initApp(doc);
+    doc.querySelector('button#theme-toggle').click();
+    expect(doc.documentElement.getAttribute('data-theme')).toBe('light');
+  });
+
+  it('when the theme toggle is clicked twice, removes data-theme from the html element', () => {
+    const doc = loadPage();
+    initApp(doc);
+    const toggle = doc.querySelector('button#theme-toggle');
+    toggle.click();
+    toggle.click();
+    expect(doc.documentElement.getAttribute('data-theme')).toBeNull();
+  });
+
+
   it('when the input changes, displays the stripped URL in the output', () => {
     const doc = loadPage();
     initApp(doc);
