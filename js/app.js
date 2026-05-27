@@ -14,12 +14,19 @@ export function initApp(doc) {
   });
 
   const themeToggle = doc.querySelector("button#theme-toggle");
+  const sunIcon = themeToggle.querySelector(".icon-sun");
+  const moonIcon = themeToggle.querySelector(".icon-moon");
+
   themeToggle.addEventListener("click", () => {
     const html = doc.documentElement;
     if (html.getAttribute("data-theme") === "light") {
       html.removeAttribute("data-theme");
+      moonIcon.setAttribute("hidden", "");
+      sunIcon.removeAttribute("hidden");
     } else {
       html.setAttribute("data-theme", "light");
+      sunIcon.setAttribute("hidden", "");
+      moonIcon.removeAttribute("hidden");
     }
   });
 }

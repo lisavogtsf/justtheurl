@@ -119,21 +119,6 @@ main {
     border-color: var(--accent);
   }
 
-  .icon-moon {
-    display: none;
-  }
-}
-
-[data-theme="light"] #theme-toggle {
-  .icon-sun {
-    display: none;
-  }
-
-  .icon-moon {
-    display: block;
-  }
-}
-
 .copy-btn {
   padding: 0.75rem 2.5rem;
   font-size: 0.95rem;

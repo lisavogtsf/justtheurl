@@ -89,6 +89,12 @@ describe('page layout', () => {
     const doc = loadPage();
     expect(doc.querySelector('button#theme-toggle svg')).not.toBeNull();
   });
+
+  it('shows the sun icon and hides the moon icon by default', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('#theme-toggle .icon-sun').hasAttribute('hidden')).toBe(false);
+    expect(doc.querySelector('#theme-toggle .icon-moon').hasAttribute('hidden')).toBe(true);
+  });
 });
 
 describe('initApp', () => {
@@ -106,6 +112,24 @@ describe('initApp', () => {
     toggle.click();
     toggle.click();
     expect(doc.documentElement.getAttribute('data-theme')).toBeNull();
+  });
+
+  it('when the theme toggle is clicked, shows the moon icon and hides the sun icon', () => {
+    const doc = loadPage();
+    initApp(doc);
+    doc.querySelector('#theme-toggle').click();
+    expect(doc.querySelector('#theme-toggle .icon-moon').hasAttribute('hidden')).toBe(false);
+    expect(doc.querySelector('#theme-toggle .icon-sun').hasAttribute('hidden')).toBe(true);
+  });
+
+  it('when the theme toggle is clicked twice, shows the sun icon and hides the moon icon again', () => {
+    const doc = loadPage();
+    initApp(doc);
+    const toggle = doc.querySelector('#theme-toggle');
+    toggle.click();
+    toggle.click();
+    expect(doc.querySelector('#theme-toggle .icon-sun').hasAttribute('hidden')).toBe(false);
+    expect(doc.querySelector('#theme-toggle .icon-moon').hasAttribute('hidden')).toBe(true);
   });
 
 
