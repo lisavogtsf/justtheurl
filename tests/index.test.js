@@ -40,3 +40,10 @@ describe('page title styling', () => {
     expect(doc.querySelector('h1 span.title__word--tertiary')).not.toBeNull();
   });
 });
+
+describe('url input', () => {
+  it('has a URL input field', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('input[type="url"]')).not.toBeNull();
+  });
+});
