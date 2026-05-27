@@ -39,24 +39,24 @@ describe('page title styling', () => {
     expect(styles).toContain('system-ui');
   });
 
-  it('gives each word span a distinct class for individual styling', () => {
+  it('gives each word span a distinct BEM class for individual styling', () => {
     const doc = loadPage();
-    expect(doc.querySelector('h1 span.just')).not.toBeNull();
-    expect(doc.querySelector('h1 span.the')).not.toBeNull();
-    expect(doc.querySelector('h1 span.url')).not.toBeNull();
+    expect(doc.querySelector('h1 span.title__word--primary')).not.toBeNull();
+    expect(doc.querySelector('h1 span.title__word--secondary')).not.toBeNull();
+    expect(doc.querySelector('h1 span.title__word--tertiary')).not.toBeNull();
   });
 
   it('applies distinct opacity to each word for visual hierarchy', () => {
     const doc = loadPage();
     const styles = doc.querySelector('style').textContent;
-    expect(styles).toMatch(/span\.just[^}]*opacity:\s*0\.7/s);
-    expect(styles).toMatch(/span\.the[^}]*opacity:\s*0\.3/s);
-    expect(styles).toMatch(/span\.url[^}]*opacity:\s*1/s);
+    expect(styles).toMatch(/title__word--secondary[^}]*opacity:\s*0\.7/s);
+    expect(styles).toMatch(/title__word--tertiary[^}]*opacity:\s*0\.3/s);
+    expect(styles).toMatch(/title__word--primary[^}]*opacity:\s*1/s);
   });
 
   it('capitalizes each word using CSS text-transform', () => {
     const doc = loadPage();
     const styles = doc.querySelector('style').textContent;
-    expect(styles).toMatch(/span\.url[^}]*text-transform:\s*uppercase/s);
+    expect(styles).toMatch(/title__word--primary[^}]*text-transform:\s*uppercase/s);
   });
 });
