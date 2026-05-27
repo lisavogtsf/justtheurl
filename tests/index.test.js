@@ -18,3 +18,16 @@ describe('index.html', () => {
     expect(doc.body.textContent).toContain('justtheurl')
   })
 })
+
+describe('page title', () => {
+  it('displays the title as an h1 with "just", "the", and "url" as three distinct spans', () => {
+    const doc = loadPage()
+    const h1 = doc.querySelector('h1')
+    expect(h1).not.toBeNull()
+    const words = h1.querySelectorAll('span')
+    expect(words).toHaveLength(3)
+    expect(words[0].textContent).toBe('just')
+    expect(words[1].textContent).toBe('the')
+    expect(words[2].textContent).toBe('url')
+  })
+})
