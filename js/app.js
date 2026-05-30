@@ -19,9 +19,9 @@ export function initApp(doc) {
   }
 
   input.addEventListener("input", () => {
-    const stripped = stripQueryParams(input.value);
-    output.value = stripped;
-    if (stripped) copyToClipboard(stripped);
+    const { result, state } = stripQueryParams(input.value);
+    output.value = result;
+    if (state !== "invalid" && result) copyToClipboard(result);
   });
 
   copyBtn.addEventListener("click", () => {

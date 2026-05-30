@@ -3,8 +3,10 @@ import { stripQueryParams } from "../js/url-utils.js";
 
 describe("stripQueryParams", () => {
   it("strips query params from a URL", () => {
-    expect(stripQueryParams("https://example.com/page?foo=bar&baz=qux")).toBe(
-      "https://example.com/page",
+    const { result, state } = stripQueryParams(
+      "https://example.com/page?foo=bar&baz=qux",
     );
+    expect(result).toBe("https://example.com/page");
+    expect(state).toBe("stripped");
   });
 });
