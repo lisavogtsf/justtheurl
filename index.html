@@ -15,15 +15,11 @@
     <span class="title__word--secondary">just</span><span class="title__word--tertiary">the</span><span class="title__word--primary">url</span>
   </h1>
   <button id="theme-toggle" aria-label="Toggle theme">
-    <svg class="icon-moon" hidden xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    <svg class="icon-moon" hidden width="20" height="20">
+      <use href="icons/icons.svg#icon-moon"/>
     </svg>
-    <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="5"/>
-      <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-      <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    <svg class="icon-sun" width="20" height="20">
+      <use href="icons/icons.svg#icon-sun"/>
     </svg>
   </button>
   <main>
@@ -31,37 +27,22 @@
     <div class="input-row">
       <input type="url" id="url-input" class="url-input" placeholder="Paste a URL…" autofocus>
       <button id="paste" aria-label="Paste from clipboard">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M15 2H9a1 1 0 0 0-1 1v2c0 .6.4 1 1 1h6c.6 0 1-.4 1-1V3c0-.6-.4-1-1-1z"/>
-          <path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
-          <path d="M16 13h6"/>
-          <path d="M19 10l3 3-3 3"/>
-        </svg>
+        <svg width="16" height="16"><use href="icons/icons.svg#icon-paste"/></svg>
       </button>
       <button id="clear" aria-label="Clear input">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"/>
-          <line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
+        <svg width="16" height="16"><use href="icons/icons.svg#icon-clear"/></svg>
       </button>
     </div>
     <output class="url-output" aria-live="polite"></output>
     <div class="action-row">
-    <button id="copy" class="copy-btn">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="9" y="9" width="13" height="13" rx="2"/>
-        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-      </svg>
-      <span class="copy-label">Copy</span>
-    </button>
-    <button id="open" class="open-btn">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-        <polyline points="15 3 21 3 21 9"/>
-        <line x1="10" y1="14" x2="21" y2="3"/>
-      </svg>
-      Open
-    </button>
+      <button id="copy" class="copy-btn">
+        <svg width="16" height="16"><use href="icons/icons.svg#icon-copy"/></svg>
+        <span class="copy-label">Copy</span>
+      </button>
+      <button id="open" class="open-btn">
+        <svg width="16" height="16"><use href="icons/icons.svg#icon-open"/></svg>
+        Open
+      </button>
     </div>
   </main>
 </body>
