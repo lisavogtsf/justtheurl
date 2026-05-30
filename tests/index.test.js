@@ -61,9 +61,21 @@ describe('url input', () => {
     expect(doc.querySelector('button#paste')).not.toBeNull();
   });
 
+  it('paste button has a title matching its aria-label', () => {
+    const doc = loadPage();
+    const btn = doc.querySelector('button#paste');
+    expect(btn.getAttribute('title')).toBe(btn.getAttribute('aria-label'));
+  });
+
   it('has a clear button', () => {
     const doc = loadPage();
     expect(doc.querySelector('button#clear')).not.toBeNull();
+  });
+
+  it('clear button has a title matching its aria-label', () => {
+    const doc = loadPage();
+    const btn = doc.querySelector('button#clear');
+    expect(btn.getAttribute('title')).toBe(btn.getAttribute('aria-label'));
   });
 });
 
