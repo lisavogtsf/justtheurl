@@ -352,4 +352,17 @@ describe('initApp', () => {
 
     expect(doc.querySelector('output').dataset.state).toBe('invalid');
   });
+
+  it('when the input is not a valid URL, does not write to the clipboard', () => {
+    const doc = loadPage();
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    doc.defaultView.navigator.clipboard = { writeText };
+    initApp(doc);
+
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'not a url';
+    input.dispatchEvent(new doc.defaultView.Event('input'));
+
+    expect(writeText).not.toHaveBeenCalled();
+  });
 });
