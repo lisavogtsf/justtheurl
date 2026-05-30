@@ -118,6 +118,11 @@ describe('copy button', () => {
     expect(label).not.toBeNull();
     expect(label.textContent).toBe('Copy');
   });
+
+  it('has a title attribute with text "Copy"', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('button#copy').getAttribute('title')).toBe('Copy');
+  });
 });
 
 describe('page layout', () => {
@@ -157,6 +162,11 @@ describe('open button', () => {
   it('contains an SVG icon', () => {
     const doc = loadPage();
     expect(doc.querySelector('button#open svg')).not.toBeNull();
+  });
+
+  it('has a title attribute with text "Open"', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('button#open').getAttribute('title')).toBe('Open');
   });
 });
 
