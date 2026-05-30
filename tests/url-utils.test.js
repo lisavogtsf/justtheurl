@@ -23,4 +23,12 @@ describe("stripQueryParams", () => {
     expect(result).toBe("https://example.com/page");
     expect(state).toBe("stripped");
   });
+
+  it("strips the #_=_ tracking hash (contains '=')", () => {
+    const { result, state } = stripQueryParams(
+      "https://example.com/page#_=_",
+    );
+    expect(result).toBe("https://example.com/page");
+    expect(state).toBe("stripped");
+  });
 });
