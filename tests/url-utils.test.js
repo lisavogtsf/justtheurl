@@ -67,4 +67,10 @@ describe("stripQueryParams", () => {
     expect(result).toBe("");
     expect(state).toBe("invalid");
   });
+
+  it("returns state 'empty' for whitespace-only input", () => {
+    const { result, state } = stripQueryParams("   ");
+    expect(result).toBe("");
+    expect(state).toBe("empty");
+  });
 });
