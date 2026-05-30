@@ -21,6 +21,7 @@ export function initApp(doc) {
   input.addEventListener("input", () => {
     const { result, state } = stripQueryParams(input.value);
     output.value = result;
+    output.dataset.state = state;
     if (state !== "invalid" && result) copyToClipboard(result);
   });
 
