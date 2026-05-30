@@ -55,4 +55,10 @@ describe("stripQueryParams", () => {
     expect(result).toBe("https://example.com/page#section");
     expect(state).toBe("stripped");
   });
+
+  it("handles a protocol-less URL by prepending https://", () => {
+    const { result, state } = stripQueryParams("example.com?foo=bar");
+    expect(result).toBe("https://example.com/");
+    expect(state).toBe("stripped");
+  });
 });
