@@ -365,4 +365,17 @@ describe('initApp', () => {
 
     expect(writeText).not.toHaveBeenCalled();
   });
+
+  it('when input has a tracking hash, strips it and sets data-state to "stripped"', () => {
+    const doc = loadPage();
+    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
+    initApp(doc);
+
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'https://example.com/page#ref=foo';
+    input.dispatchEvent(new doc.defaultView.Event('input'));
+
+    expect(doc.querySelector('output').value).toBe('https://example.com/page');
+    expect(doc.querySelector('output').dataset.state).toBe('stripped');
+  });
 });
