@@ -15,4 +15,12 @@ describe("stripQueryParams", () => {
     expect(result).toBe("https://example.com/page");
     expect(state).toBe("clean");
   });
+
+  it("strips a tracking hash containing '=' and returns state 'stripped'", () => {
+    const { result, state } = stripQueryParams(
+      "https://example.com/page#ref=newsletter",
+    );
+    expect(result).toBe("https://example.com/page");
+    expect(state).toBe("stripped");
+  });
 });
