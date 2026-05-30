@@ -73,4 +73,12 @@ describe("stripQueryParams", () => {
     expect(result).toBe("");
     expect(state).toBe("empty");
   });
+
+  it("strips everything after the first '?' even when multiple '?' appear", () => {
+    const { result, state } = stripQueryParams(
+      "https://example.com/page?a=1?b=2",
+    );
+    expect(result).toBe("https://example.com/page");
+    expect(state).toBe("stripped");
+  });
 });
