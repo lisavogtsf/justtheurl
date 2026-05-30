@@ -9,4 +9,10 @@ describe("stripQueryParams", () => {
     expect(result).toBe("https://example.com/page");
     expect(state).toBe("stripped");
   });
+
+  it("returns state 'clean' when the URL has no query params or tracking hash", () => {
+    const { result, state } = stripQueryParams("https://example.com/page");
+    expect(result).toBe("https://example.com/page");
+    expect(state).toBe("clean");
+  });
 });
