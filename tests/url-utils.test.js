@@ -39,4 +39,12 @@ describe("stripQueryParams", () => {
     expect(result).toBe("https://example.com/page#section-2");
     expect(state).toBe("clean");
   });
+
+  it("strips both query params and a tracking hash", () => {
+    const { result, state } = stripQueryParams(
+      "https://example.com/page?foo=bar#ref=x",
+    );
+    expect(result).toBe("https://example.com/page");
+    expect(state).toBe("stripped");
+  });
 });
