@@ -61,4 +61,10 @@ describe("stripQueryParams", () => {
     expect(result).toBe("https://example.com/");
     expect(state).toBe("stripped");
   });
+
+  it("returns state 'invalid' for input that is not a recognisable URL", () => {
+    const { result, state } = stripQueryParams("hello world");
+    expect(result).toBe("");
+    expect(state).toBe("invalid");
+  });
 });
