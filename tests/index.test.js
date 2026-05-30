@@ -328,4 +328,16 @@ describe('initApp', () => {
 
     expect(doc.querySelector('output').dataset.state).toBe('stripped');
   });
+
+  it('when the URL has no params to strip, sets output data-state to "clean"', () => {
+    const doc = loadPage();
+    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
+    initApp(doc);
+
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'https://example.com/page';
+    input.dispatchEvent(new doc.defaultView.Event('input'));
+
+    expect(doc.querySelector('output').dataset.state).toBe('clean');
+  });
 });
