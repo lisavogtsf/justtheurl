@@ -47,4 +47,12 @@ describe("stripQueryParams", () => {
     expect(result).toBe("https://example.com/page");
     expect(state).toBe("stripped");
   });
+
+  it("strips query params but preserves a plain anchor hash", () => {
+    const { result, state } = stripQueryParams(
+      "https://example.com/page?foo=bar#section",
+    );
+    expect(result).toBe("https://example.com/page#section");
+    expect(state).toBe("stripped");
+  });
 });
