@@ -340,4 +340,16 @@ describe('initApp', () => {
 
     expect(doc.querySelector('output').dataset.state).toBe('clean');
   });
+
+  it('when the input is not a valid URL, sets output data-state to "invalid"', () => {
+    const doc = loadPage();
+    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
+    initApp(doc);
+
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'not a url';
+    input.dispatchEvent(new doc.defaultView.Event('input'));
+
+    expect(doc.querySelector('output').dataset.state).toBe('invalid');
+  });
 });
