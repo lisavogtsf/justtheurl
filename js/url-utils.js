@@ -8,20 +8,22 @@ export function stripQueryParams(rawUrl) {
   const trimmed = rawUrl.trim();
   if (!trimmed) return { result: "", state: "empty" };
 
+  // Reject anything with a space before attempting URL parsing.
+  // Unencoded spaces are never valid in any URL — their presence means the
+  // input is plain text, not a URL. This guard must come before new URL()
+  // because Chrome's URL parser encodes spaces rather than throwing, so
+  // "hello world" would otherwise silently become "https://hello%20world/".
+  if (trimmed.includes(" ")) {
+    return { result: "", state: "invalid" };
+  }
+
   // Attempt to parse as a full URL. If that fails, try prepending "https://"
   // to handle protocol-less input like "example.com?foo=bar".
-  // The https:// fallback is only attempted when the input contains no spaces:
-  // Chrome's URL parser encodes spaces rather than throwing, so without this
-  // guard "hello world" becomes "https://hello%20world/" instead of invalid.
-  // Unencoded spaces are never valid in a URL, so their presence means the
-  // input is plain text, not a forgotten-protocol URL.
+  // If both attempts fail, the input is not a recognisable URL.
   let parsed;
   try {
     parsed = new URL(trimmed);
   } catch {
-    if (trimmed.includes(" ")) {
-      return { result: "", state: "invalid" };
-    }
     try {
       parsed = new URL("https://" + trimmed);
     } catch {
