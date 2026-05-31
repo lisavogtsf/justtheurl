@@ -18,12 +18,18 @@ export function stripQueryParams(rawUrl) {
   }
 
   // Attempt to parse as a full URL. If that fails, try prepending "https://"
-  // to handle protocol-less input like "example.com?foo=bar".
-  // If both attempts fail, the input is not a recognisable URL.
+  // but only when the input contains a dot — the minimum signal that it could
+  // be a protocol-less domain like "example.com?foo=bar". Single words like
+  // "helloworld" are syntactically valid hostnames per the URL spec, so without
+  // the dot check they would silently become "https://helloworld/" instead of
+  // being rejected as invalid.
   let parsed;
   try {
     parsed = new URL(trimmed);
   } catch {
+    if (!trimmed.includes(".")) {
+      return { result: "", state: "invalid" };
+    }
     try {
       parsed = new URL("https://" + trimmed);
     } catch {

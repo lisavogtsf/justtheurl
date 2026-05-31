@@ -68,6 +68,12 @@ describe("stripQueryParams", () => {
     expect(state).toBe("invalid");
   });
 
+  it("returns state 'invalid' for a single word with no dot (not a domain)", () => {
+    const { result, state } = stripQueryParams("helloworld");
+    expect(result).toBe("");
+    expect(state).toBe("invalid");
+  });
+
   it("returns state 'empty' for whitespace-only input", () => {
     const { result, state } = stripQueryParams("   ");
     expect(result).toBe("");
