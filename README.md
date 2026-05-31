@@ -1,0 +1,57 @@
+# justtheurl
+
+A minimal tool for stripping tracking parameters from URLs. Paste a URL, get back the clean base URL — no query strings, no noise.
+
+## What it does
+
+Modern URLs are often cluttered with tracking parameters:
+
+```
+https://example.com/article?utm_source=twitter&utm_medium=social&utm_campaign=launch
+```
+
+justtheurl strips everything after the `?` and hands you back:
+
+```
+https://example.com/article
+```
+
+The stripped URL is automatically copied to your clipboard the moment you paste. On mobile the full flow is a single tap: **Paste → done**.
+
+## Features
+
+- **Auto-copy** — stripped URL is copied to clipboard immediately on input
+- **Paste button** — reads from clipboard directly, no long-press required on mobile
+- **Open button** — opens the stripped URL in a new tab to verify the destination
+- **Clear button** — resets the input in one tap
+- **Dark/light mode** — toggle in the top-right corner; dark is default
+- **Accessible** — labelled input, `aria-live` output, keyboard-navigable
+
+## Running locally
+
+Requires Python 3 (for the dev server) and Node.js (for tests).
+
+```bash
+npm install        # install test dependencies
+npm run dev        # serve at http://localhost:3000
+npm test           # run the test suite
+npm run test:watch # run tests in watch mode
+```
+
+The app is plain HTML, CSS, and JavaScript with no build step. The dev server is only needed because ES module imports are blocked on `file://` URLs by the browser.
+
+## Project structure
+
+```
+index.html        # single page app
+css/styles.css    # all styling, dark/light theme via CSS custom properties
+js/app.js         # DOM wiring, event handlers
+js/url-utils.js   # pure URL-stripping logic
+icons/icons.svg   # SVG sprite (all icons defined once, referenced via <use>)
+tests/            # Vitest test suite
+plans/            # feature planning documents
+```
+
+## Testing approach
+
+The project is developed with strict TDD. Tests use [Vitest](https://vitest.dev) and [jsdom](https://github.com/jsdom/jsdom) to load and query the real `index.html`. The test suite covers page structure, accessibility attributes, and all interactive behaviour via `initApp`.
