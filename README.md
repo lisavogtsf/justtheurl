@@ -2,6 +2,10 @@
 
 A minimal tool for stripping tracking parameters from URLs. Paste a URL, get back the clean base URL — no query strings, no noise.
 
+## LLM/AI Attribution
+
+This README.md and the vast majority of this project were authored by Claude Code (via VSCode and the Claude app.)
+
 ## What it does
 
 Modern URLs are often cluttered with tracking parameters:
