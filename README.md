@@ -4,7 +4,7 @@ A minimal tool for stripping tracking parameters from URLs. Paste a URL, get bac
 
 ## LLM/AI Attribution
 
-This README.md and the vast majority of this project were authored by Claude Code (via VSCode and the Claude app.)
+This README.md and the vast majority of this project were authored by Claude Code (via VSCode and the Claude app).
 
 ## What it does
 
@@ -30,6 +30,12 @@ The stripped URL is automatically copied to your clipboard the moment you paste.
 - **Clear button** — resets the input in one tap
 - **Dark/light mode** — toggle in the top-right corner; dark is default
 - **Accessible** — labelled input, `aria-live` output, keyboard-navigable
+
+## Deployment
+
+The live app is at **[lisavogtsf.github.io/justtheurl](https://lisavogtsf.github.io/justtheurl)**.
+
+It is deployed via GitHub Pages from the `main` branch root. There is no build step — GitHub Pages serves `index.html` directly. To deploy an update, merge to `main` and GitHub Pages picks it up automatically.
 
 ## Running locally
 
