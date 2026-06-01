@@ -21,6 +21,14 @@ Never skip the failing-test step. If asked to add a feature or fix a bug, start 
 - Keep tests focused on observable behavior (text, structure, interaction), not implementation details.
 - Add new tests to the **end** of the test file by default. The only exception is when a new test directly relates to an existing `describe` block — in that case, add it inside that block to keep related behavior grouped. Never insert a new `describe` block above existing ones.
 
+## Test output
+
+A passing test suite is not sufficient — the output must also be clean. Treat any `stderr` lines in Vitest output as failures, even when all tests report as passed.
+
+Errors written to stderr (such as uncaught TypeErrors inside event listeners) indicate real bugs that jsdom has swallowed rather than propagated. They will not appear in the test result count, so they are easy to miss, but they often signal behaviour that is broken in the browser even though the assertion still passes.
+
+After every test run, check for `stderr |` lines in the output. If any are present, find the root cause and fix it before moving on — do not commit with stderr output present.
+
 ## Git commits
 
 Whenever the agent makes a commit, the message must end with:
