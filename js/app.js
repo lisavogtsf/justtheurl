@@ -8,7 +8,7 @@ export function initApp(doc) {
   const copyLabel = copyBtn.querySelector(".copy-label");
 
   function copyToClipboard(text) {
-    doc.defaultView.navigator.clipboard.writeText(text).catch(() => {});
+    doc.defaultView.navigator.clipboard?.writeText(text).catch(() => {});
   }
 
   function showCopiedFeedback() {
