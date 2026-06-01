@@ -41,7 +41,7 @@ The stripped URL is automatically copied to your clipboard the moment you paste.
 
 The live app is at **[lisavogtsf.github.io/justtheurl](https://lisavogtsf.github.io/justtheurl)**.
 
-It is deployed via GitHub Pages from the `main` branch root. There is no build step — GitHub Pages serves `index.html` directly. To deploy an update, merge to `main` and GitHub Pages picks it up automatically.
+It is deployed via GitHub Pages from the `gh-pages` branch root. There is no build step — GitHub Pages serves `index.html` directly. To deploy an update, push the changes to the `gh-pages` branch.
 
 ## Running locally
 
