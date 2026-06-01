@@ -188,3 +188,48 @@ Add `--error` variable and state-driven messages via `::after`:
 5. Update `app.js` to handle `{ result, state }` → green
 6. Add CSS for `clean` and `invalid` states
 7. Commit: `v4 step 2: clean/invalid state feedback in UI`
+
+---
+
+## Learning review: problems encountered in implementation
+
+### Problem 1 — `"hello world"` treated as valid (`state: "clean"`)
+
+**What happened:** After implementing the `https://` prefix fallback, typing `"hello world"` in the browser produced `https://hello%20world/` with "Already clean" instead of the expected "Not a valid URL".
+
+**Root cause:** The plan assumed the WHATWG URL parser would throw on any input containing spaces. This is true in Node.js, but Chrome's URL parser encodes spaces rather than throwing — `new URL("https://hello world")` produces `https://hello%20world/` and succeeds. The unit test for `"hello world"` passed because Node.js (used by Vitest) was stricter than the browser, creating a false green.
+
+**Why the test didn't catch it:** The unit test was written before the `new URL()` implementation was in place. When the implementation was added in the same commit, the test went straight to green — meaning it was never actually red against the new code. The browser/Node.js discrepancy was invisible in the test environment.
+
+**Mitigation:** Added an unconditional space check *before* any call to `new URL()`. Since unencoded spaces are never valid in any URL regardless of parser, this check is environment-agnostic:
+
+```javascript
+if (trimmed.includes(" ")) {
+  return { result: "", state: "invalid" };
+}
+```
+
+**Lesson:** When a test passes immediately on implementing a feature (no red phase observed), ask why — it may be passing for environmental reasons that don't hold in production. Manual browser testing after implementation would have caught this immediately.
+
+---
+
+### Problem 2 — `"helloworld"` treated as valid (`state: "clean"`)
+
+**What happened:** After fixing the space issue, single words without spaces (e.g. `"helloworld"`) still produced `https://helloworld/` with "Already clean".
+
+**Root cause:** Single-label hostnames like `helloworld` are syntactically valid per the WHATWG URL spec — the same spec that allows `localhost`. So `new URL("https://helloworld")` succeeds in all environments. The `https://` prefix fallback was designed to handle protocol-less *domains* like `example.com?foo=bar`, but there was no check to distinguish a real domain from an arbitrary word.
+
+**Mitigation:** Gate the `https://` prefix fallback on the presence of a dot (`.`) in the input. All real domain names have at least one dot (the TLD boundary). Single words without dots are rejected before the prefix is attempted:
+
+```javascript
+if (!trimmed.includes(".")) {
+  return { result: "", state: "invalid" };
+}
+try {
+  parsed = new URL("https://" + trimmed);
+} ...
+```
+
+Note this check lives *inside* the `catch` block (only runs when `new URL(trimmed)` already failed), unlike the space check which is unconditional. This is intentional: inputs that already include a protocol like `https://helloworld` are not our problem to reject — if someone deliberately passes that, it is a technically valid URL.
+
+**Lesson:** The `https://` prefix fallback is a convenience feature with a narrow intended scope (protocol-less domains). Any convenience fallback needs explicit guards defining when it applies, not just when it fails. "Try it and see if it throws" is insufficient when the parser is more permissive than expected.
