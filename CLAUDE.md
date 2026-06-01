@@ -15,6 +15,7 @@ Never skip the failing-test step. If asked to add a feature or fix a bug, start 
 - **Runner:** Vitest (`npm test` for a single run, `npm run test:watch` for watch mode)
 - **DOM:** jsdom (loaded via JSDOM in tests)
 - **Test files:** `tests/` directory, named `*.test.js`
+- **Linter:** ESLint (`npm run lint`); must pass with no errors before committing
 
 ## Conventions
 
