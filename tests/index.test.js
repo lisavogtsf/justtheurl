@@ -316,4 +316,79 @@ describe('initApp', () => {
     expect(input.value).toBe('');
     expect(doc.querySelector('output').value).toBe('');
   });
+
+  it('when query params are stripped, sets output data-state to "stripped"', () => {
+    const doc = loadPage();
+    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
+    initApp(doc);
+
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'https://example.com/page?foo=bar';
+    input.dispatchEvent(new doc.defaultView.Event('input'));
+
+    expect(doc.querySelector('output').dataset.state).toBe('stripped');
+  });
+
+  it('when the URL has no params to strip, sets output data-state to "clean"', () => {
+    const doc = loadPage();
+    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
+    initApp(doc);
+
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'https://example.com/page';
+    input.dispatchEvent(new doc.defaultView.Event('input'));
+
+    expect(doc.querySelector('output').dataset.state).toBe('clean');
+  });
+
+  it('when the input is not a valid URL, sets output data-state to "invalid"', () => {
+    const doc = loadPage();
+    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
+    initApp(doc);
+
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'not a url';
+    input.dispatchEvent(new doc.defaultView.Event('input'));
+
+    expect(doc.querySelector('output').dataset.state).toBe('invalid');
+  });
+
+  it('when the input is not a valid URL, does not write to the clipboard', () => {
+    const doc = loadPage();
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    doc.defaultView.navigator.clipboard = { writeText };
+    initApp(doc);
+
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'not a url';
+    input.dispatchEvent(new doc.defaultView.Event('input'));
+
+    expect(writeText).not.toHaveBeenCalled();
+  });
+
+  it('when input has a tracking hash, strips it and sets data-state to "stripped"', () => {
+    const doc = loadPage();
+    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
+    initApp(doc);
+
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'https://example.com/page#ref=foo';
+    input.dispatchEvent(new doc.defaultView.Event('input'));
+
+    expect(doc.querySelector('output').value).toBe('https://example.com/page');
+    expect(doc.querySelector('output').dataset.state).toBe('stripped');
+  });
+
+  it('when input has a plain anchor hash, keeps it in output and sets data-state to "clean"', () => {
+    const doc = loadPage();
+    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
+    initApp(doc);
+
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'https://example.com/page#section';
+    input.dispatchEvent(new doc.defaultView.Event('input'));
+
+    expect(doc.querySelector('output').value).toBe('https://example.com/page#section');
+    expect(doc.querySelector('output').dataset.state).toBe('clean');
+  });
 });
