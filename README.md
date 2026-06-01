@@ -10,17 +10,20 @@ This README.md and the vast majority of this project were authored by Claude Cod
 
 ## What it does
 
-Modern URLs are often cluttered with tracking parameters:
+Modern URLs are often cluttered with tracking parameters and tracking fragments:
 
 ```
 https://example.com/article?utm_source=twitter&utm_medium=social&utm_campaign=launch
+https://example.com/article#ref=newsletter
 ```
 
-justtheurl strips everything after the `?` and hands you back:
+justtheurl strips the query string and any tracking hash fragment, and hands you back:
 
 ```
 https://example.com/article
 ```
+
+Plain anchor hashes (e.g. `#section-2`) are preserved — only hash fragments that look like key=value tracking params (containing `=`) are removed.
 
 The stripped URL is automatically copied to your clipboard the moment you paste. On mobile the full flow is a single tap: **Paste → done**.
 
@@ -32,6 +35,7 @@ The stripped URL is automatically copied to your clipboard the moment you paste.
 - **Clear button** — resets the input in one tap
 - **Dark/light mode** — toggle in the top-right corner; dark is default
 - **Accessible** — labelled input, `aria-live` output, keyboard-navigable
+- **Smart feedback** — shows "Already clean" when there's nothing to strip; shows "Not a valid URL" for unrecognisable input and skips the clipboard write
 
 ## Deployment
 
