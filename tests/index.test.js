@@ -271,6 +271,27 @@ describe('initApp', () => {
       expect(doc.querySelector('#theme-toggle .icon-sun').hasAttribute('hidden')).toBe(false);
       expect(doc.querySelector('#theme-toggle .icon-moon').hasAttribute('hidden')).toBe(true);
     });
+
+    it('sets data-theme="light" on init when prefers-color-scheme is light', () => {
+      const doc = loadPage();
+      doc.defaultView.navigator.clipboard = makeClipboard();
+      doc.defaultView.matchMedia = (query) => ({
+        matches: query === '(prefers-color-scheme: light)',
+      });
+      initApp(doc);
+      expect(doc.documentElement.getAttribute('data-theme')).toBe('light');
+    });
+
+    it('shows moon icon and hides sun icon on init when prefers-color-scheme is light', () => {
+      const doc = loadPage();
+      doc.defaultView.navigator.clipboard = makeClipboard();
+      doc.defaultView.matchMedia = (query) => ({
+        matches: query === '(prefers-color-scheme: light)',
+      });
+      initApp(doc);
+      expect(doc.querySelector('#theme-toggle .icon-moon').hasAttribute('hidden')).toBe(false);
+      expect(doc.querySelector('#theme-toggle .icon-sun').hasAttribute('hidden')).toBe(true);
+    });
   });
 
   describe('input and output', () => {

@@ -76,16 +76,27 @@ export function initApp(doc) {
 
   clearBtn.addEventListener("click", clearAll);
 
+  function applyLightTheme() {
+    doc.documentElement.setAttribute("data-theme", "light");
+    sunIcon.setAttribute("hidden", "");
+    moonIcon.removeAttribute("hidden");
+  }
+
+  function applyDarkTheme() {
+    doc.documentElement.removeAttribute("data-theme");
+    moonIcon.setAttribute("hidden", "");
+    sunIcon.removeAttribute("hidden");
+  }
+
+  if (doc.defaultView.matchMedia?.("(prefers-color-scheme: light)").matches) {
+    applyLightTheme();
+  }
+
   themeToggle.addEventListener("click", () => {
-    const html = doc.documentElement;
-    if (html.getAttribute("data-theme") === "light") {
-      html.removeAttribute("data-theme");
-      moonIcon.setAttribute("hidden", "");
-      sunIcon.removeAttribute("hidden");
+    if (doc.documentElement.getAttribute("data-theme") === "light") {
+      applyDarkTheme();
     } else {
-      html.setAttribute("data-theme", "light");
-      sunIcon.setAttribute("hidden", "");
-      moonIcon.removeAttribute("hidden");
+      applyLightTheme();
     }
   });
 }
