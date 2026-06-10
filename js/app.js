@@ -5,8 +5,13 @@ export function initApp(doc) {
   const output = doc.querySelector("output");
   const statusEl = doc.querySelector(".url-status");
   const copyBtn = doc.querySelector("button#copy");
-
   const copyLabel = copyBtn.querySelector(".copy-label");
+  const pasteBtn = doc.querySelector("button#paste");
+  const openBtn = doc.querySelector("button#open");
+  const clearBtn = doc.querySelector("button#clear");
+  const themeToggle = doc.querySelector("button#theme-toggle");
+  const sunIcon = themeToggle.querySelector(".icon-sun");
+  const moonIcon = themeToggle.querySelector(".icon-moon");
 
   function copyToClipboard(text) {
     doc.defaultView.navigator.clipboard?.writeText(text).catch(() => {});
@@ -32,6 +37,13 @@ export function initApp(doc) {
     }
   }
 
+  function clearAll() {
+    input.value = "";
+    output.value = "";
+    updateStatus("empty", 0);
+    input.focus();
+  }
+
   input.addEventListener("input", () => {
     const { result, state, paramCount } = stripQueryParams(input.value);
     output.value = result;
@@ -40,12 +52,10 @@ export function initApp(doc) {
     if (state !== "invalid" && result) copyToClipboard(result);
   });
 
-  copyBtn.addEventListener("click", () => {
-    copyToClipboard(output.value);
-    showCopiedFeedback();
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") clearAll();
   });
 
-  const pasteBtn = doc.querySelector("button#paste");
   if (!doc.defaultView.navigator.clipboard?.readText) {
     pasteBtn.hidden = true;
   }
@@ -55,28 +65,16 @@ export function initApp(doc) {
     input.dispatchEvent(new doc.defaultView.Event("input"));
   });
 
-  const openBtn = doc.querySelector("button#open");
+  copyBtn.addEventListener("click", () => {
+    copyToClipboard(output.value);
+    showCopiedFeedback();
+  });
+
   openBtn.addEventListener("click", () => {
     if (output.value) doc.defaultView.open(output.value, "_blank");
   });
 
-  function clearAll() {
-    input.value = "";
-    output.value = "";
-    updateStatus("empty", 0);
-    input.focus();
-  }
-
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") clearAll();
-  });
-
-  const clearBtn = doc.querySelector("button#clear");
   clearBtn.addEventListener("click", clearAll);
-
-  const themeToggle = doc.querySelector("button#theme-toggle");
-  const sunIcon = themeToggle.querySelector(".icon-sun");
-  const moonIcon = themeToggle.querySelector(".icon-moon");
 
   themeToggle.addEventListener("click", () => {
     const html = doc.documentElement;
