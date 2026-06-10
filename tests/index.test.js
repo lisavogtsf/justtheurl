@@ -104,6 +104,11 @@ describe('result display', () => {
     const doc = loadPage();
     expect(doc.querySelector('output').getAttribute('aria-atomic')).toBe('true');
   });
+
+  it('has a .url-status element below the output', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('p.url-status')).not.toBeNull();
+  });
 });
 
 describe('copy button', () => {
