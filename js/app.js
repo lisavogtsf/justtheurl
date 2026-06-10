@@ -46,6 +46,7 @@ export function initApp(doc) {
     if (e.key === "Escape") {
       input.value = "";
       output.value = "";
+      input.focus();
     }
   });
 

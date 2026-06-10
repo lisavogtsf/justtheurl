@@ -321,6 +321,14 @@ describe('initApp', () => {
     expect(input.value).toBe('');
   });
 
+  it('after pressing Escape, focus returns to the input', () => {
+    const doc = loadPage();
+    initApp(doc);
+    const input = doc.querySelector('input[type="url"]');
+    input.dispatchEvent(new doc.defaultView.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    expect(doc.activeElement).toBe(input);
+  });
+
   it('when Escape is pressed, clears the output value', () => {
     const doc = loadPage();
     doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
