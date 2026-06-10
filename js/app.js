@@ -3,6 +3,7 @@ import { stripQueryParams } from "./url-utils.js";
 export function initApp(doc) {
   const input = doc.querySelector('input[type="url"]');
   const output = doc.querySelector("output");
+  const statusEl = doc.querySelector(".url-status");
   const copyBtn = doc.querySelector("button#copy");
 
   const copyLabel = copyBtn.querySelector(".copy-label");
@@ -18,10 +19,19 @@ export function initApp(doc) {
     }, 2000);
   }
 
+  function updateStatus(state, paramCount) {
+    if (state === "stripped" && paramCount > 0) {
+      statusEl.textContent = paramCount === 1 ? "1 param removed" : `${paramCount} params removed`;
+    } else {
+      statusEl.textContent = "";
+    }
+  }
+
   input.addEventListener("input", () => {
-    const { result, state } = stripQueryParams(input.value);
+    const { result, state, paramCount } = stripQueryParams(input.value);
     output.value = result;
     output.dataset.state = state;
+    updateStatus(state, paramCount);
     if (state !== "invalid" && result) copyToClipboard(result);
   });
 

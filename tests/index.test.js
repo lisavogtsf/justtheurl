@@ -437,6 +437,16 @@ describe('initApp', () => {
     expect(doc.querySelector('output').dataset.state).toBe('stripped');
   });
 
+  it('after stripping 1 param, .url-status text is "1 param removed"', () => {
+    const doc = loadPage();
+    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
+    initApp(doc);
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'https://example.com/page?foo=bar';
+    input.dispatchEvent(new doc.defaultView.Event('input'));
+    expect(doc.querySelector('.url-status').textContent).toBe('1 param removed');
+  });
+
   it('when input has a plain anchor hash, keeps it in output and sets data-state to "clean"', () => {
     const doc = loadPage();
     doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
