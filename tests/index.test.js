@@ -312,6 +312,15 @@ describe('initApp', () => {
     expect(writeText).toHaveBeenCalledWith('https://example.com/page');
   });
 
+  it('when Escape is pressed in the input, clears the input value', () => {
+    const doc = loadPage();
+    initApp(doc);
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'https://example.com/page?foo=bar';
+    input.dispatchEvent(new doc.defaultView.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    expect(input.value).toBe('');
+  });
+
   it('when the clear button is clicked, clears the input and output', () => {
     const doc = loadPage();
     doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };

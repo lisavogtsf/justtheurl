@@ -42,6 +42,13 @@ export function initApp(doc) {
     if (output.value) doc.defaultView.open(output.value, "_blank");
   });
 
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      input.value = "";
+      output.value = "";
+    }
+  });
+
   const clearBtn = doc.querySelector("button#clear");
   clearBtn.addEventListener("click", () => {
     input.value = "";
