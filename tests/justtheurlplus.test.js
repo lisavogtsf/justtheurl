@@ -76,18 +76,26 @@ describe("justtheurlplus smart stripping", () => {
     );
   });
 
-  it("shows param count in status (no warning link) for YouTube", () => {
+  it("shows tracking param count (no warning link) for YouTube", () => {
     const doc = setupDoc();
     typeUrl(doc, "https://www.youtube.com/watch?v=dQw4w9WgXcQ&utm_source=newsletter");
     const status = doc.querySelector(".url-status");
-    expect(status.textContent).toBe("1 param removed");
+    expect(status.textContent).toBe("1 tracking param removed");
     expect(doc.querySelector(".url-status a")).toBeNull();
   });
 
-  it('shows "already clean" when nothing is stripped', () => {
+  it('shows plural "tracking params removed" when multiple are stripped', () => {
+    const doc = setupDoc();
+    typeUrl(doc, "https://example.com/page?utm_source=x&utm_medium=y");
+    expect(doc.querySelector(".url-status").textContent).toBe("2 tracking params removed");
+  });
+
+  it('shows "already clean — no known tracking params" when nothing is stripped', () => {
     const doc = setupDoc();
     typeUrl(doc, "https://example.com/page?custom=value");
-    expect(doc.querySelector(".url-status").textContent).toBe("already clean");
+    expect(doc.querySelector(".url-status").textContent).toBe(
+      "already clean — no known tracking params",
+    );
   });
 
   it("sets output data-state to stripped when params are removed", () => {
@@ -122,9 +130,9 @@ describe("justtheurlplus url= preload", () => {
     );
   });
 
-  it("shows the param count in status after preloading", () => {
+  it("shows the tracking param count in status after preloading", () => {
     const doc = setupPreloadDoc();
-    expect(doc.querySelector(".url-status").textContent).toBe("1 param removed");
+    expect(doc.querySelector(".url-status").textContent).toBe("1 tracking param removed");
   });
 
   it("leaves the input empty when no url= param is present", () => {

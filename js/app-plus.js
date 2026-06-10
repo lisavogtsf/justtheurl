@@ -27,9 +27,10 @@ export function initPlusApp(doc) {
   function updateStatus(state, paramCount) {
     statusEl.dataset.state = state;
     if (state === "stripped" && paramCount > 0) {
-      statusEl.textContent = paramCount === 1 ? "1 param removed" : `${paramCount} params removed`;
+      statusEl.textContent =
+        paramCount === 1 ? "1 tracking param removed" : `${paramCount} tracking params removed`;
     } else if (state === "clean") {
-      statusEl.textContent = "already clean";
+      statusEl.textContent = "already clean — no known tracking params";
     } else if (state === "invalid") {
       statusEl.textContent = "not a valid URL";
     } else {
