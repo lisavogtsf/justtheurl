@@ -184,6 +184,11 @@ describe('page layout', () => {
     expect(doc.querySelector('#theme-toggle .icon-sun').hasAttribute('hidden')).toBe(false);
     expect(doc.querySelector('#theme-toggle .icon-moon').hasAttribute('hidden')).toBe(true);
   });
+
+  it('has a favicon link in the head', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('link[rel="icon"]')).not.toBeNull();
+  });
 });
 
 describe('open button', () => {
