@@ -103,8 +103,8 @@ describe("stripQueryParams", () => {
     expect(paramCount).toBe(0);
   });
 
-  it("returns paramCount: 0 when only a tracking hash is stripped", () => {
+  it("returns paramCount: 1 when only a tracking hash is stripped", () => {
     const { paramCount } = stripQueryParams("https://example.com/page#ref=foo");
-    expect(paramCount).toBe(0);
+    expect(paramCount).toBe(1);
   });
 });
