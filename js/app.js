@@ -24,6 +24,8 @@ export function initApp(doc) {
       statusEl.textContent = paramCount === 1 ? "1 param removed" : `${paramCount} params removed`;
     } else if (state === "clean") {
       statusEl.textContent = "already clean";
+    } else if (state === "invalid") {
+      statusEl.textContent = "not a valid URL";
     } else {
       statusEl.textContent = "";
     }
