@@ -2,23 +2,28 @@
 
 A minimal tool for stripping tracking parameters from URLs. Paste a URL, get back the clean base URL — no query strings, no noise.
 
+![justtheurl stripping query params from a URL](assets/screenshot.png)
+
 ## LLM/AI Attribution
 
 This README.md and the vast majority of this project were authored by Claude Code (via VSCode and the Claude app).
 
 ## What it does
 
-Modern URLs are often cluttered with tracking parameters:
+Modern URLs are often cluttered with tracking parameters and tracking fragments:
 
 ```
 https://example.com/article?utm_source=twitter&utm_medium=social&utm_campaign=launch
+https://example.com/article#ref=newsletter
 ```
 
-justtheurl strips everything after the `?` and hands you back:
+justtheurl strips the query string and any tracking hash fragment, and hands you back:
 
 ```
 https://example.com/article
 ```
+
+Plain anchor hashes (e.g. `#section-2`) are preserved — only hash fragments that look like key=value tracking params (containing `=`) are removed.
 
 The stripped URL is automatically copied to your clipboard the moment you paste. On mobile the full flow is a single tap: **Paste → done**.
 
@@ -30,12 +35,13 @@ The stripped URL is automatically copied to your clipboard the moment you paste.
 - **Clear button** — resets the input in one tap
 - **Dark/light mode** — toggle in the top-right corner; dark is default
 - **Accessible** — labelled input, `aria-live` output, keyboard-navigable
+- **Smart feedback** — shows how many params were removed (e.g. "2 params removed"); shows "already clean" when there's nothing to strip; shows "not a valid URL" for unrecognisable input and skips the clipboard write
 
 ## Deployment
 
 The live app is at **[lisavogtsf.github.io/justtheurl](https://lisavogtsf.github.io/justtheurl)**.
 
-It is deployed via GitHub Pages from the `main` branch root. There is no build step — GitHub Pages serves `index.html` directly. To deploy an update, merge to `main` and GitHub Pages picks it up automatically.
+It is deployed via GitHub Pages from the `gh-pages` branch root. There is no build step — GitHub Pages serves `index.html` directly. To deploy an update, push the changes to the `gh-pages` branch.
 
 ## Running locally
 
