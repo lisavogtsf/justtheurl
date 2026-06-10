@@ -160,6 +160,11 @@ describe("justtheurlplus page structure", () => {
     expect(doc.querySelector('input[type="url"]')).not.toBeNull();
   });
 
+  it('body has the class "plus-page" so the CSS can target the alternative output placeholder', () => {
+    const doc = loadPlusPage();
+    expect(doc.body.classList.contains("plus-page")).toBe(true);
+  });
+
   it("has an sr-only label describing the purpose as removing tracking", () => {
     const doc = loadPlusPage();
     const label = doc.querySelector("label.sr-only");
