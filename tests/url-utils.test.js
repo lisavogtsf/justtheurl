@@ -107,4 +107,14 @@ describe("stripQueryParams", () => {
     const { paramCount } = stripQueryParams("https://example.com/page#ref=foo");
     expect(paramCount).toBe(1);
   });
+
+  it("returns paramCount: 2 when a tracking hash with two key-value pairs is stripped", () => {
+    const { paramCount } = stripQueryParams("https://example.com/page#ref=x&stuff=more");
+    expect(paramCount).toBe(2);
+  });
+
+  it("counts both query params and multiple hash params together", () => {
+    const { paramCount } = stripQueryParams("https://example.com/page?foo=bar#ref=x&stuff=more");
+    expect(paramCount).toBe(3);
+  });
 });

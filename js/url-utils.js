@@ -42,7 +42,7 @@ export function stripQueryParams(rawUrl) {
   const hadTrackingHash = HASH_CONTAINS_KEY_VALUE.test(parsed.hash.slice(1));
   const paramCount =
     (hadQuery ? new URLSearchParams(parsed.search).size : 0) +
-    (hadTrackingHash ? 1 : 0);
+    (hadTrackingHash ? new URLSearchParams(parsed.hash.slice(1)).size : 0);
 
   // Always remove the query string. Remove the hash only if it looks like tracking.
   parsed.search = "";
