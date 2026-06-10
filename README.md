@@ -29,11 +29,11 @@ The stripped URL is automatically copied to your clipboard the moment you paste.
 
 ## Features
 
-- **Auto-copy** — stripped URL is copied to clipboard immediately on input
+- **Auto-copy** — stripped URL is copied to clipboard when the result changes
 - **Paste button** — reads from clipboard directly, no long-press required on mobile
 - **Open button** — opens the stripped URL in a new tab to verify the destination
 - **Clear button** — resets the input in one tap
-- **Dark/light mode** — toggle in the top-right corner; dark is default
+- **Dark/light mode** — toggle in the top-right corner; defaults to your system preference
 - **Accessible** — labelled input, `aria-live` output, keyboard-navigable
 - **Smart feedback** — shows how many params were removed (e.g. "2 params removed"); shows "already clean" when there's nothing to strip; shows "not a valid URL" for unrecognisable input and skips the clipboard write
 
@@ -63,6 +63,7 @@ index.html        # single page app
 css/styles.css    # all styling, dark/light theme via CSS custom properties
 js/app.js         # DOM wiring, event handlers
 js/url-utils.js   # pure URL-stripping logic
+favicon.svg       # browser tab icon
 icons/icons.svg   # SVG sprite (all icons defined once, referenced via <use>)
 tests/            # Vitest test suite
 plans/            # feature planning documents

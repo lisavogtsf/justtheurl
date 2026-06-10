@@ -37,9 +37,12 @@ export function initApp(doc) {
     }
   }
 
+  let lastCopied = "";
+
   function clearAll() {
     input.value = "";
     output.value = "";
+    lastCopied = "";
     updateStatus("empty", 0);
     input.focus();
   }
@@ -49,7 +52,10 @@ export function initApp(doc) {
     output.value = result;
     output.dataset.state = state;
     updateStatus(state, paramCount);
-    if (state !== "invalid" && result) copyToClipboard(result);
+    if (state !== "invalid" && result && result !== lastCopied) {
+      copyToClipboard(result);
+      lastCopied = result;
+    }
   });
 
   input.addEventListener("keydown", (e) => {
@@ -60,9 +66,13 @@ export function initApp(doc) {
     pasteBtn.hidden = true;
   }
   pasteBtn.addEventListener("click", async () => {
-    const text = await doc.defaultView.navigator.clipboard.readText();
-    input.value = text;
-    input.dispatchEvent(new doc.defaultView.Event("input"));
+    try {
+      const text = await doc.defaultView.navigator.clipboard.readText();
+      input.value = text;
+      input.dispatchEvent(new doc.defaultView.Event("input"));
+    } catch {
+      statusEl.textContent = "clipboard access denied";
+    }
   });
 
   copyBtn.addEventListener("click", () => {
@@ -76,16 +86,27 @@ export function initApp(doc) {
 
   clearBtn.addEventListener("click", clearAll);
 
+  function applyLightTheme() {
+    doc.documentElement.setAttribute("data-theme", "light");
+    sunIcon.setAttribute("hidden", "");
+    moonIcon.removeAttribute("hidden");
+  }
+
+  function applyDarkTheme() {
+    doc.documentElement.removeAttribute("data-theme");
+    moonIcon.setAttribute("hidden", "");
+    sunIcon.removeAttribute("hidden");
+  }
+
+  if (doc.defaultView.matchMedia?.("(prefers-color-scheme: light)").matches) {
+    applyLightTheme();
+  }
+
   themeToggle.addEventListener("click", () => {
-    const html = doc.documentElement;
-    if (html.getAttribute("data-theme") === "light") {
-      html.removeAttribute("data-theme");
-      moonIcon.setAttribute("hidden", "");
-      sunIcon.removeAttribute("hidden");
+    if (doc.documentElement.getAttribute("data-theme") === "light") {
+      applyDarkTheme();
     } else {
-      html.setAttribute("data-theme", "light");
-      sunIcon.setAttribute("hidden", "");
-      moonIcon.removeAttribute("hidden");
+      applyLightTheme();
     }
   });
 }

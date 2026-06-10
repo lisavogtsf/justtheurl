@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>justtheurl</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/styles.css">
   <script type="module">
     import { initApp } from './js/app.js';
@@ -11,10 +12,11 @@
   </script>
 </head>
 <body>
-  <h1>
-    <span class="title__word--secondary">just</span><span class="title__word--tertiary">the</span><span class="title__word--primary">url</span>
-  </h1>
-  <button id="theme-toggle" aria-label="Toggle theme">
+  <header class="site-header">
+    <h1>
+      <span class="title__word--secondary">just</span><span class="title__word--tertiary">the</span><span class="title__word--primary">url</span>
+    </h1>
+    <button id="theme-toggle" aria-label="Toggle theme">
     <svg class="icon-moon" hidden width="20" height="20">
       <use href="icons/icons.svg#icon-moon"/>
     </svg>
@@ -22,6 +24,7 @@
       <use href="icons/icons.svg#icon-sun"/>
     </svg>
   </button>
+  </header>
   <main>
     <label for="url-input" class="sr-only">URL to strip</label>
     <div class="input-row">
@@ -33,7 +36,7 @@
         <svg width="16" height="16"><use href="icons/icons.svg#icon-clear"/></svg>
       </button>
     </div>
-    <output class="url-output" aria-live="polite" role="status" aria-atomic="true"></output>
+    <output class="url-output" for="url-input" aria-live="polite" role="status" aria-atomic="true"></output>
     <p class="url-status"></p>
     <div class="action-row">
       <button id="copy" class="copy-btn" title="Copy">
@@ -48,7 +51,7 @@
   </main>
   <footer class="site-footer">
     <p><a href="https://activistchecklist.org/links/">Why remove tracking from URLs?</a></p>
-    <p>Your URLs never leave your browser.</p>
+    <p>All URLs are processed locally. Nothing is sent anywhere.</p>
     <p>© 2026 <a href="https://github.com/lisavogtsf/">Lisa Vogt</a> (and Claude Code), <a href="https://github.com/lisavogtsf/justtheurl">source code</a></p>
   </footer>
 </body>

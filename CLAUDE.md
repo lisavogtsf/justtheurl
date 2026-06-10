@@ -8,7 +8,7 @@
 2. **Green** — write the absolute minimum code to make the failing test pass. Do not add anything not required by the test — no extra styling, no extra attributes, no anticipating future tests. If it isn't tested, it doesn't get written.
 3. **Refactor** — clean up code and tests while keeping tests green.
 
-Never skip the failing-test step. If asked to add a feature or fix a bug, start by writing (or identifying) the test that demonstrates the missing behavior.
+Never skip the failing-test step. If asked to add a feature or fix a bug, start by writing (or identifying) the test that demonstrates the missing behavior. The perceived size or triviality of a change is never a reason to skip this step.
 
 ## Testing stack
 

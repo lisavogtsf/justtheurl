@@ -20,6 +20,7 @@ function makeClipboard() {
 function setupDoc() {
   const doc = loadPage();
   doc.defaultView.navigator.clipboard = makeClipboard();
+  doc.defaultView.matchMedia = () => ({ matches: false });
   initApp(doc);
   return doc;
 }
@@ -127,6 +128,11 @@ describe('result display', () => {
     const doc = loadPage();
     expect(doc.querySelector('p.url-status')).not.toBeNull();
   });
+
+  it('has a for attribute linking it to the url input', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('output').getAttribute('for')).toBe('url-input');
+  });
 });
 
 describe('copy button', () => {
@@ -184,6 +190,21 @@ describe('page layout', () => {
     expect(doc.querySelector('#theme-toggle .icon-sun').hasAttribute('hidden')).toBe(false);
     expect(doc.querySelector('#theme-toggle .icon-moon').hasAttribute('hidden')).toBe(true);
   });
+
+  it('has a favicon link in the head', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('link[rel="icon"]')).not.toBeNull();
+  });
+
+  it('has a header element containing the h1', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('header h1')).not.toBeNull();
+  });
+
+  it('has a header element containing the theme toggle', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('header button#theme-toggle')).not.toBeNull();
+  });
 });
 
 describe('open button', () => {
@@ -223,6 +244,19 @@ describe('initApp', () => {
       await doc.querySelector('button#paste').click();
 
       expect(doc.querySelector('input.url-input').value).toBe('https://example.com/page?foo=bar');
+    });
+
+    it('when clipboard read is denied, shows "clipboard access denied" in .url-status', async () => {
+      const doc = loadPage();
+      doc.defaultView.navigator.clipboard = {
+        readText: vi.fn().mockRejectedValue(new Error('NotAllowedError')),
+        writeText: vi.fn().mockResolvedValue(undefined),
+      };
+      initApp(doc);
+
+      await doc.querySelector('button#paste').click();
+
+      expect(doc.querySelector('.url-status').textContent).toBe('clipboard access denied');
     });
   });
 
@@ -270,6 +304,27 @@ describe('initApp', () => {
       toggle.click();
       expect(doc.querySelector('#theme-toggle .icon-sun').hasAttribute('hidden')).toBe(false);
       expect(doc.querySelector('#theme-toggle .icon-moon').hasAttribute('hidden')).toBe(true);
+    });
+
+    it('sets data-theme="light" on init when prefers-color-scheme is light', () => {
+      const doc = loadPage();
+      doc.defaultView.navigator.clipboard = makeClipboard();
+      doc.defaultView.matchMedia = (query) => ({
+        matches: query === '(prefers-color-scheme: light)',
+      });
+      initApp(doc);
+      expect(doc.documentElement.getAttribute('data-theme')).toBe('light');
+    });
+
+    it('shows moon icon and hides sun icon on init when prefers-color-scheme is light', () => {
+      const doc = loadPage();
+      doc.defaultView.navigator.clipboard = makeClipboard();
+      doc.defaultView.matchMedia = (query) => ({
+        matches: query === '(prefers-color-scheme: light)',
+      });
+      initApp(doc);
+      expect(doc.querySelector('#theme-toggle .icon-moon').hasAttribute('hidden')).toBe(false);
+      expect(doc.querySelector('#theme-toggle .icon-sun').hasAttribute('hidden')).toBe(true);
     });
   });
 
@@ -332,6 +387,18 @@ describe('initApp', () => {
       typeUrl(doc, 'not a url');
 
       expect(writeText).not.toHaveBeenCalled();
+    });
+
+    it('does not write to the clipboard again when the same URL is typed a second time', () => {
+      const doc = loadPage();
+      const writeText = vi.fn().mockResolvedValue(undefined);
+      doc.defaultView.navigator.clipboard = { writeText };
+      initApp(doc);
+
+      typeUrl(doc, 'https://example.com/page?foo=bar');
+      typeUrl(doc, 'https://example.com/page?foo=bar');
+
+      expect(writeText).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -484,6 +551,6 @@ describe('footer', () => {
 
   it('contains the privacy text', () => {
     const doc = loadPage();
-    expect(doc.querySelector('footer').textContent).toContain('Your URLs never leave your browser.');
+    expect(doc.querySelector('footer').textContent).toContain('All URLs are processed locally. Nothing is sent anywhere.');
   });
 });
