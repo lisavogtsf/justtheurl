@@ -152,6 +152,13 @@ describe("justtheurlplus page structure", () => {
     expect(doc.querySelector('input[type="url"]')).not.toBeNull();
   });
 
+  it("has a placeholder that describes smart stripping", () => {
+    const doc = loadPlusPage();
+    expect(doc.querySelector('input[type="url"]').getAttribute("placeholder")).toBe(
+      "Paste a URL — tracking removed, essentials kept",
+    );
+  });
+
   it("has an output element", () => {
     const doc = loadPlusPage();
     expect(doc.querySelector("output")).not.toBeNull();
