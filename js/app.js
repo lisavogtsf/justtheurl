@@ -3,6 +3,7 @@ import { stripQueryParams } from "./url-utils.js";
 export function initApp(doc) {
   const input = doc.querySelector('input[type="url"]');
   const output = doc.querySelector("output");
+  const statusEl = doc.querySelector(".url-status");
   const copyBtn = doc.querySelector("button#copy");
 
   const copyLabel = copyBtn.querySelector(".copy-label");
@@ -18,10 +19,24 @@ export function initApp(doc) {
     }, 2000);
   }
 
+  function updateStatus(state, paramCount) {
+    statusEl.dataset.state = state;
+    if (state === "stripped" && paramCount > 0) {
+      statusEl.textContent = paramCount === 1 ? "1 param removed" : `${paramCount} params removed`;
+    } else if (state === "clean") {
+      statusEl.textContent = "already clean";
+    } else if (state === "invalid") {
+      statusEl.textContent = "not a valid URL";
+    } else {
+      statusEl.textContent = "";
+    }
+  }
+
   input.addEventListener("input", () => {
-    const { result, state } = stripQueryParams(input.value);
+    const { result, state, paramCount } = stripQueryParams(input.value);
     output.value = result;
     output.dataset.state = state;
+    updateStatus(state, paramCount);
     if (state !== "invalid" && result) copyToClipboard(result);
   });
 
@@ -31,6 +46,9 @@ export function initApp(doc) {
   });
 
   const pasteBtn = doc.querySelector("button#paste");
+  if (!doc.defaultView.navigator.clipboard?.readText) {
+    pasteBtn.hidden = true;
+  }
   pasteBtn.addEventListener("click", async () => {
     const text = await doc.defaultView.navigator.clipboard.readText();
     input.value = text;
@@ -42,11 +60,19 @@ export function initApp(doc) {
     if (output.value) doc.defaultView.open(output.value, "_blank");
   });
 
-  const clearBtn = doc.querySelector("button#clear");
-  clearBtn.addEventListener("click", () => {
+  function clearAll() {
     input.value = "";
     output.value = "";
+    updateStatus("empty", 0);
+    input.focus();
+  }
+
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") clearAll();
   });
+
+  const clearBtn = doc.querySelector("button#clear");
+  clearBtn.addEventListener("click", clearAll);
 
   const themeToggle = doc.querySelector("button#theme-toggle");
   const sunIcon = themeToggle.querySelector(".icon-sun");

@@ -87,4 +87,34 @@ describe("stripQueryParams", () => {
     expect(result).toBe("https://example.com/page");
     expect(state).toBe("stripped");
   });
+
+  it("returns paramCount: 1 when one query param is stripped", () => {
+    const { paramCount } = stripQueryParams("https://example.com/page?foo=bar");
+    expect(paramCount).toBe(1);
+  });
+
+  it("returns paramCount: 2 when two query params are stripped", () => {
+    const { paramCount } = stripQueryParams("https://example.com/page?foo=bar&baz=qux");
+    expect(paramCount).toBe(2);
+  });
+
+  it("returns paramCount: 0 for a clean URL with no query params", () => {
+    const { paramCount } = stripQueryParams("https://example.com/page");
+    expect(paramCount).toBe(0);
+  });
+
+  it("returns paramCount: 1 when only a tracking hash is stripped", () => {
+    const { paramCount } = stripQueryParams("https://example.com/page#ref=foo");
+    expect(paramCount).toBe(1);
+  });
+
+  it("returns paramCount: 2 when a tracking hash with two key-value pairs is stripped", () => {
+    const { paramCount } = stripQueryParams("https://example.com/page#ref=x&stuff=more");
+    expect(paramCount).toBe(2);
+  });
+
+  it("counts both query params and multiple hash params together", () => {
+    const { paramCount } = stripQueryParams("https://example.com/page?foo=bar#ref=x&stuff=more");
+    expect(paramCount).toBe(3);
+  });
 });
