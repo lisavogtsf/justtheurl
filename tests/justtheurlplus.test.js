@@ -160,6 +160,13 @@ describe("justtheurlplus page structure", () => {
     expect(doc.querySelector('input[type="url"]')).not.toBeNull();
   });
 
+  it("has an sr-only label describing the purpose as removing tracking", () => {
+    const doc = loadPlusPage();
+    const label = doc.querySelector("label.sr-only");
+    expect(label).not.toBeNull();
+    expect(label.textContent).toBe("URL to remove tracking from");
+  });
+
   it("has a placeholder that describes smart stripping", () => {
     const doc = loadPlusPage();
     expect(doc.querySelector('input[type="url"]').getAttribute("placeholder")).toBe(
