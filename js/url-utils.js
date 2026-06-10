@@ -40,6 +40,7 @@ export function stripQueryParams(rawUrl) {
   // Record what was present before stripping, so we can report the correct state.
   const hadQuery = parsed.search !== "";
   const hadTrackingHash = HASH_CONTAINS_KEY_VALUE.test(parsed.hash.slice(1));
+  const paramCount = hadQuery ? new URLSearchParams(parsed.search).size : 0;
 
   // Always remove the query string. Remove the hash only if it looks like tracking.
   parsed.search = "";
@@ -49,5 +50,5 @@ export function stripQueryParams(rawUrl) {
   // "stripped" means something was actually removed; "clean" means the URL
   // was valid but had nothing to strip.
   const state = hadQuery || hadTrackingHash ? "stripped" : "clean";
-  return { result, state };
+  return { result, state, paramCount };
 }

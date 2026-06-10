@@ -87,4 +87,9 @@ describe("stripQueryParams", () => {
     expect(result).toBe("https://example.com/page");
     expect(state).toBe("stripped");
   });
+
+  it("returns paramCount: 1 when one query param is stripped", () => {
+    const { paramCount } = stripQueryParams("https://example.com/page?foo=bar");
+    expect(paramCount).toBe(1);
+  });
 });
