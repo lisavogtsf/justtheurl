@@ -94,6 +94,11 @@ describe('result display', () => {
     const doc = loadPage();
     expect(doc.querySelector('output').getAttribute('aria-live')).toBe('polite');
   });
+
+  it('has role="status" on the output element', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('output').getAttribute('role')).toBe('status');
+  });
 });
 
 describe('copy button', () => {
