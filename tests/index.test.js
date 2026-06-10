@@ -437,6 +437,16 @@ describe('initApp', () => {
     expect(doc.querySelector('output').dataset.state).toBe('stripped');
   });
 
+  it('for invalid input, .url-status has data-state="invalid"', () => {
+    const doc = loadPage();
+    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
+    initApp(doc);
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'not a url';
+    input.dispatchEvent(new doc.defaultView.Event('input'));
+    expect(doc.querySelector('.url-status').dataset.state).toBe('invalid');
+  });
+
   it('for empty input, .url-status is empty', () => {
     const doc = loadPage();
     doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };

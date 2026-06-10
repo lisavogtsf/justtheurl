@@ -20,6 +20,7 @@ export function initApp(doc) {
   }
 
   function updateStatus(state, paramCount) {
+    statusEl.dataset.state = state;
     if (state === "stripped" && paramCount > 0) {
       statusEl.textContent = paramCount === 1 ? "1 param removed" : `${paramCount} params removed`;
     } else if (state === "clean") {
