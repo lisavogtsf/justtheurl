@@ -13,6 +13,24 @@ function loadPage() {
   return new JSDOM(html).window.document;
 }
 
+function makeClipboard() {
+  return { writeText: vi.fn().mockResolvedValue(undefined) };
+}
+
+function setupDoc() {
+  const doc = loadPage();
+  doc.defaultView.navigator.clipboard = makeClipboard();
+  initApp(doc);
+  return doc;
+}
+
+function typeUrl(doc, url) {
+  const input = doc.querySelector('input[type="url"]');
+  input.value = url;
+  input.dispatchEvent(new doc.defaultView.Event('input'));
+  return input;
+}
+
 describe('page title', () => {
   it('contains the text "justtheurl"', () => {
     const doc = loadPage();
@@ -208,37 +226,32 @@ describe('initApp', () => {
 
   it('when the open button is clicked, opens the stripped URL in a new tab', () => {
     const doc = loadPage();
-    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
+    doc.defaultView.navigator.clipboard = makeClipboard();
     const open = vi.fn();
     doc.defaultView.open = open;
     initApp(doc);
 
-    const input = doc.querySelector('input[type="url"]');
-    input.value = 'https://example.com/page?foo=bar';
-    input.dispatchEvent(new doc.defaultView.Event('input'));
+    typeUrl(doc, 'https://example.com/page?foo=bar');
     doc.querySelector('button#open').click();
 
     expect(open).toHaveBeenCalledWith('https://example.com/page', '_blank');
   });
 
   it('when switching to light mode, sets data-theme="light" on the html element', () => {
-    const doc = loadPage();
-    initApp(doc);
+    const doc = setupDoc();
     doc.querySelector('button#theme-toggle').click();
     expect(doc.documentElement.getAttribute('data-theme')).toBe('light');
   });
 
   it('when switching to light mode, shows the moon icon and hides the sun icon in the toggle', () => {
-    const doc = loadPage();
-    initApp(doc);
+    const doc = setupDoc();
     doc.querySelector('#theme-toggle').click();
     expect(doc.querySelector('#theme-toggle .icon-moon').hasAttribute('hidden')).toBe(false);
     expect(doc.querySelector('#theme-toggle .icon-sun').hasAttribute('hidden')).toBe(true);
   });
 
   it('when switching back to dark mode, removes data-theme from the html element', () => {
-    const doc = loadPage();
-    initApp(doc);
+    const doc = setupDoc();
     const toggle = doc.querySelector('button#theme-toggle');
     toggle.click();
     toggle.click();
@@ -246,8 +259,7 @@ describe('initApp', () => {
   });
 
   it('when switching back to dark mode, shows the sun icon and hides the moon icon in the toggle', () => {
-    const doc = loadPage();
-    initApp(doc);
+    const doc = setupDoc();
     const toggle = doc.querySelector('#theme-toggle');
     toggle.click();
     toggle.click();
@@ -255,55 +267,35 @@ describe('initApp', () => {
     expect(doc.querySelector('#theme-toggle .icon-moon').hasAttribute('hidden')).toBe(true);
   });
 
-
   it('when the input changes, auto-copies the stripped URL to the clipboard', () => {
     const doc = loadPage();
     const writeText = vi.fn().mockResolvedValue(undefined);
     doc.defaultView.navigator.clipboard = { writeText };
     initApp(doc);
 
-    const input = doc.querySelector('input[type="url"]');
-    input.value = 'https://example.com/page?foo=bar';
-    input.dispatchEvent(new doc.defaultView.Event('input'));
+    typeUrl(doc, 'https://example.com/page?foo=bar');
 
     expect(writeText).toHaveBeenCalledWith('https://example.com/page');
   });
 
   it('when the input changes, displays the stripped URL in the output', () => {
-    const doc = loadPage();
-    initApp(doc);
-
-    const input = doc.querySelector('input[type="url"]');
-    input.value = 'https://example.com/page?foo=bar&baz=qux';
-    input.dispatchEvent(new doc.defaultView.Event('input'));
-
+    const doc = setupDoc();
+    typeUrl(doc, 'https://example.com/page?foo=bar&baz=qux');
     expect(doc.querySelector('output').value).toBe('https://example.com/page');
   });
 
   it('when the copy button is clicked, shows "Copied ✓" on the button label', () => {
-    const doc = loadPage();
-    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
-    initApp(doc);
-
-    const input = doc.querySelector('input[type="url"]');
-    input.value = 'https://example.com/page?foo=bar';
-    input.dispatchEvent(new doc.defaultView.Event('input'));
+    const doc = setupDoc();
+    typeUrl(doc, 'https://example.com/page?foo=bar');
     doc.querySelector('button#copy').click();
-
     expect(doc.querySelector('button#copy .copy-label').textContent).toBe('Copied ✓');
   });
 
   it('copy button label reverts to "Copy" after 2 seconds', () => {
     vi.useFakeTimers();
-    const doc = loadPage();
-    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
-    initApp(doc);
-
-    const input = doc.querySelector('input[type="url"]');
-    input.value = 'https://example.com/page?foo=bar';
-    input.dispatchEvent(new doc.defaultView.Event('input'));
+    const doc = setupDoc();
+    typeUrl(doc, 'https://example.com/page?foo=bar');
     doc.querySelector('button#copy').click();
-
     vi.advanceTimersByTime(2000);
     expect(doc.querySelector('button#copy .copy-label').textContent).toBe('Copy');
     vi.useRealTimers();
@@ -315,121 +307,76 @@ describe('initApp', () => {
     doc.defaultView.navigator.clipboard = { writeText };
     initApp(doc);
 
-    const input = doc.querySelector('input[type="url"]');
-    input.value = 'https://example.com/page?foo=bar';
-    input.dispatchEvent(new doc.defaultView.Event('input'));
-
+    typeUrl(doc, 'https://example.com/page?foo=bar');
     doc.querySelector('button#copy').click();
 
     expect(writeText).toHaveBeenCalledWith('https://example.com/page');
   });
 
   it('when Escape is pressed in the input, clears the input value', () => {
-    const doc = loadPage();
-    initApp(doc);
-    const input = doc.querySelector('input[type="url"]');
-    input.value = 'https://example.com/page?foo=bar';
+    const doc = setupDoc();
+    const input = typeUrl(doc, 'https://example.com/page?foo=bar');
     input.dispatchEvent(new doc.defaultView.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
     expect(input.value).toBe('');
   });
 
   it('after pressing Escape, focus returns to the input', () => {
-    const doc = loadPage();
-    initApp(doc);
+    const doc = setupDoc();
     const input = doc.querySelector('input[type="url"]');
     input.dispatchEvent(new doc.defaultView.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
     expect(doc.activeElement).toBe(input);
   });
 
   it('when Escape is pressed, clears the output value', () => {
-    const doc = loadPage();
-    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
-    initApp(doc);
-    const input = doc.querySelector('input[type="url"]');
-    input.value = 'https://example.com/page?foo=bar';
-    input.dispatchEvent(new doc.defaultView.Event('input'));
+    const doc = setupDoc();
+    const input = typeUrl(doc, 'https://example.com/page?foo=bar');
     input.dispatchEvent(new doc.defaultView.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
     expect(doc.querySelector('output').value).toBe('');
   });
 
   it('after clicking clear on a clean URL, .url-status is empty', () => {
-    const doc = loadPage();
-    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
-    initApp(doc);
-    const input = doc.querySelector('input[type="url"]');
-    input.value = 'https://example.com/page';
-    input.dispatchEvent(new doc.defaultView.Event('input'));
+    const doc = setupDoc();
+    typeUrl(doc, 'https://example.com/page');
     doc.querySelector('button#clear').click();
     expect(doc.querySelector('.url-status').textContent).toBe('');
   });
 
   it('after pressing Escape on a clean URL, .url-status is empty', () => {
-    const doc = loadPage();
-    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
-    initApp(doc);
-    const input = doc.querySelector('input[type="url"]');
-    input.value = 'https://example.com/page';
-    input.dispatchEvent(new doc.defaultView.Event('input'));
+    const doc = setupDoc();
+    const input = typeUrl(doc, 'https://example.com/page');
     input.dispatchEvent(new doc.defaultView.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
     expect(doc.querySelector('.url-status').textContent).toBe('');
   });
 
   it('after clicking clear on a clean URL, .url-status is empty', () => {
-    const doc = loadPage();
-    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
-    initApp(doc);
+    const doc = setupDoc();
     doc.querySelector('button#clear').click();
     expect(doc.activeElement).toBe(doc.querySelector('input[type="url"]'));
   });
 
   it('when the clear button is clicked, clears the input and output', () => {
-    const doc = loadPage();
-    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
-    initApp(doc);
-
-    const input = doc.querySelector('input[type="url"]');
-    input.value = 'https://example.com/page?foo=bar';
-    input.dispatchEvent(new doc.defaultView.Event('input'));
-
+    const doc = setupDoc();
+    typeUrl(doc, 'https://example.com/page?foo=bar');
     doc.querySelector('button#clear').click();
-
-    expect(input.value).toBe('');
+    expect(doc.querySelector('input[type="url"]').value).toBe('');
     expect(doc.querySelector('output').value).toBe('');
   });
 
   it('when query params are stripped, sets output data-state to "stripped"', () => {
-    const doc = loadPage();
-    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
-    initApp(doc);
-
-    const input = doc.querySelector('input[type="url"]');
-    input.value = 'https://example.com/page?foo=bar';
-    input.dispatchEvent(new doc.defaultView.Event('input'));
-
+    const doc = setupDoc();
+    typeUrl(doc, 'https://example.com/page?foo=bar');
     expect(doc.querySelector('output').dataset.state).toBe('stripped');
   });
 
   it('when the URL has no params to strip, sets output data-state to "clean"', () => {
-    const doc = loadPage();
-    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
-    initApp(doc);
-
-    const input = doc.querySelector('input[type="url"]');
-    input.value = 'https://example.com/page';
-    input.dispatchEvent(new doc.defaultView.Event('input'));
-
+    const doc = setupDoc();
+    typeUrl(doc, 'https://example.com/page');
     expect(doc.querySelector('output').dataset.state).toBe('clean');
   });
 
   it('when the input is not a valid URL, sets output data-state to "invalid"', () => {
-    const doc = loadPage();
-    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
-    initApp(doc);
-
-    const input = doc.querySelector('input[type="url"]');
-    input.value = 'not a url';
-    input.dispatchEvent(new doc.defaultView.Event('input'));
-
+    const doc = setupDoc();
+    typeUrl(doc, 'not a url');
     expect(doc.querySelector('output').dataset.state).toBe('invalid');
   });
 
@@ -439,105 +386,63 @@ describe('initApp', () => {
     doc.defaultView.navigator.clipboard = { writeText };
     initApp(doc);
 
-    const input = doc.querySelector('input[type="url"]');
-    input.value = 'not a url';
-    input.dispatchEvent(new doc.defaultView.Event('input'));
+    typeUrl(doc, 'not a url');
 
     expect(writeText).not.toHaveBeenCalled();
   });
 
   it('when input has a tracking hash, strips it and sets data-state to "stripped"', () => {
-    const doc = loadPage();
-    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
-    initApp(doc);
-
-    const input = doc.querySelector('input[type="url"]');
-    input.value = 'https://example.com/page#ref=foo';
-    input.dispatchEvent(new doc.defaultView.Event('input'));
-
+    const doc = setupDoc();
+    typeUrl(doc, 'https://example.com/page#ref=foo');
     expect(doc.querySelector('output').value).toBe('https://example.com/page');
     expect(doc.querySelector('output').dataset.state).toBe('stripped');
   });
 
   it('for invalid input, .url-status has data-state="invalid"', () => {
-    const doc = loadPage();
-    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
-    initApp(doc);
-    const input = doc.querySelector('input[type="url"]');
-    input.value = 'not a url';
-    input.dispatchEvent(new doc.defaultView.Event('input'));
+    const doc = setupDoc();
+    typeUrl(doc, 'not a url');
     expect(doc.querySelector('.url-status').dataset.state).toBe('invalid');
   });
 
   it('for empty input, .url-status is empty', () => {
-    const doc = loadPage();
-    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
-    initApp(doc);
-    const input = doc.querySelector('input[type="url"]');
-    input.value = '';
-    input.dispatchEvent(new doc.defaultView.Event('input'));
+    const doc = setupDoc();
+    typeUrl(doc, '');
     expect(doc.querySelector('.url-status').textContent).toBe('');
   });
 
   it('for invalid input, .url-status text is "not a valid URL"', () => {
-    const doc = loadPage();
-    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
-    initApp(doc);
-    const input = doc.querySelector('input[type="url"]');
-    input.value = 'not a url';
-    input.dispatchEvent(new doc.defaultView.Event('input'));
+    const doc = setupDoc();
+    typeUrl(doc, 'not a url');
     expect(doc.querySelector('.url-status').textContent).toBe('not a valid URL');
   });
 
   it('for a clean URL, .url-status text is "already clean"', () => {
-    const doc = loadPage();
-    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
-    initApp(doc);
-    const input = doc.querySelector('input[type="url"]');
-    input.value = 'https://example.com/page';
-    input.dispatchEvent(new doc.defaultView.Event('input'));
+    const doc = setupDoc();
+    typeUrl(doc, 'https://example.com/page');
     expect(doc.querySelector('.url-status').textContent).toBe('already clean');
   });
 
   it('after stripping 2 params, .url-status text is "2 params removed"', () => {
-    const doc = loadPage();
-    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
-    initApp(doc);
-    const input = doc.querySelector('input[type="url"]');
-    input.value = 'https://example.com/page?foo=bar&baz=qux';
-    input.dispatchEvent(new doc.defaultView.Event('input'));
+    const doc = setupDoc();
+    typeUrl(doc, 'https://example.com/page?foo=bar&baz=qux');
     expect(doc.querySelector('.url-status').textContent).toBe('2 params removed');
   });
 
   it('after stripping a tracking hash, .url-status text is "1 param removed"', () => {
-    const doc = loadPage();
-    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
-    initApp(doc);
-    const input = doc.querySelector('input[type="url"]');
-    input.value = 'https://example.com/page#ref=foo';
-    input.dispatchEvent(new doc.defaultView.Event('input'));
+    const doc = setupDoc();
+    typeUrl(doc, 'https://example.com/page#ref=foo');
     expect(doc.querySelector('.url-status').textContent).toBe('1 param removed');
   });
 
   it('after stripping 1 param, .url-status text is "1 param removed"', () => {
-    const doc = loadPage();
-    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
-    initApp(doc);
-    const input = doc.querySelector('input[type="url"]');
-    input.value = 'https://example.com/page?foo=bar';
-    input.dispatchEvent(new doc.defaultView.Event('input'));
+    const doc = setupDoc();
+    typeUrl(doc, 'https://example.com/page?foo=bar');
     expect(doc.querySelector('.url-status').textContent).toBe('1 param removed');
   });
 
   it('when input has a plain anchor hash, keeps it in output and sets data-state to "clean"', () => {
-    const doc = loadPage();
-    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
-    initApp(doc);
-
-    const input = doc.querySelector('input[type="url"]');
-    input.value = 'https://example.com/page#section';
-    input.dispatchEvent(new doc.defaultView.Event('input'));
-
+    const doc = setupDoc();
+    typeUrl(doc, 'https://example.com/page#section');
     expect(doc.querySelector('output').value).toBe('https://example.com/page#section');
     expect(doc.querySelector('output').dataset.state).toBe('clean');
   });
