@@ -1,4 +1,4 @@
-import { stripQueryParams } from "./url-utils.js";
+import { stripQueryParams, shouldWarn } from "./url-utils.js";
 
 export function initApp(doc) {
   const input = doc.querySelector('input[type="url"]');
@@ -24,9 +24,12 @@ export function initApp(doc) {
     }, 2000);
   }
 
-  function updateStatus(state, paramCount) {
+  function updateStatus(state, paramCount, warn = false) {
     statusEl.dataset.state = state;
-    if (state === "stripped" && paramCount > 0) {
+    if (state === "stripped" && warn) {
+      statusEl.innerHTML =
+        '⚠ Stripping may break this URL — <a href="/justtheurlplus" class="warn-link">try the smarter version →</a>';
+    } else if (state === "stripped" && paramCount > 0) {
       statusEl.textContent = paramCount === 1 ? "1 param removed" : `${paramCount} params removed`;
     } else if (state === "clean") {
       statusEl.textContent = "already clean";
@@ -51,7 +54,8 @@ export function initApp(doc) {
     const { result, state, paramCount } = stripQueryParams(input.value);
     output.value = result;
     output.dataset.state = state;
-    updateStatus(state, paramCount);
+    const warn = state === "stripped" && result ? shouldWarn(new URL(result).hostname) : false;
+    updateStatus(state, paramCount, warn);
     if (state !== "invalid" && result && result !== lastCopied) {
       copyToClipboard(result);
       lastCopied = result;
