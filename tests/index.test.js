@@ -20,6 +20,7 @@ function makeClipboard() {
 function setupDoc() {
   const doc = loadPage();
   doc.defaultView.navigator.clipboard = makeClipboard();
+  doc.defaultView.matchMedia = () => ({ matches: false });
   initApp(doc);
   return doc;
 }
