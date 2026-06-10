@@ -35,7 +35,7 @@ The stripped URL is automatically copied to your clipboard the moment you paste.
 - **Clear button** — resets the input in one tap
 - **Dark/light mode** — toggle in the top-right corner; dark is default
 - **Accessible** — labelled input, `aria-live` output, keyboard-navigable
-- **Smart feedback** — shows "Already clean" when there's nothing to strip; shows "Not a valid URL" for unrecognisable input and skips the clipboard write
+- **Smart feedback** — shows how many params were removed (e.g. "2 params removed"); shows "already clean" when there's nothing to strip; shows "not a valid URL" for unrecognisable input and skips the clipboard write
 
 ## Deployment
 
