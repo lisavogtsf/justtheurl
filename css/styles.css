@@ -212,43 +212,13 @@ main {
   }
 }
 
-.copy-btn {
-  width: 100%;
-  padding: 0.9rem 2.5rem;
-  font-size: 1rem;
-  font-family: inherit;
-  font-weight: 600;
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  border-radius: 999px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  transition:
-    background 0.15s,
-    transform 0.1s;
-
-  &:hover {
-    background: var(--accent-hover);
-  }
-
-  &:active {
-    transform: scale(0.97);
-  }
-}
-
+.copy-btn,
 .open-btn {
   width: 100%;
   padding: 0.9rem 2.5rem;
   font-size: 1rem;
   font-family: inherit;
   font-weight: 600;
-  background: transparent;
-  color: var(--accent);
-  border: 2px solid var(--accent);
   border-radius: 999px;
   cursor: pointer;
   display: flex;
@@ -260,12 +230,28 @@ main {
     color 0.15s,
     transform 0.1s;
 
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+.copy-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+
+  &:hover {
+    background: var(--accent-hover);
+  }
+}
+
+.open-btn {
+  background: transparent;
+  color: var(--accent);
+  border: 2px solid var(--accent);
+
   &:hover {
     background: var(--accent);
     color: #fff;
-  }
-
-  &:active {
-    transform: scale(0.97);
   }
 }
