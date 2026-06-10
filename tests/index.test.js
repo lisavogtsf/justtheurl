@@ -437,6 +437,16 @@ describe('initApp', () => {
     expect(doc.querySelector('output').dataset.state).toBe('stripped');
   });
 
+  it('for a clean URL, .url-status text is "already clean"', () => {
+    const doc = loadPage();
+    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
+    initApp(doc);
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'https://example.com/page';
+    input.dispatchEvent(new doc.defaultView.Event('input'));
+    expect(doc.querySelector('.url-status').textContent).toBe('already clean');
+  });
+
   it('after stripping 2 params, .url-status text is "2 params removed"', () => {
     const doc = loadPage();
     doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };

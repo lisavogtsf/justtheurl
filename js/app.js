@@ -22,6 +22,8 @@ export function initApp(doc) {
   function updateStatus(state, paramCount) {
     if (state === "stripped" && paramCount > 0) {
       statusEl.textContent = paramCount === 1 ? "1 param removed" : `${paramCount} params removed`;
+    } else if (state === "clean") {
+      statusEl.textContent = "already clean";
     } else {
       statusEl.textContent = "";
     }
