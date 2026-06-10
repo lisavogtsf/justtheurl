@@ -50,19 +50,21 @@ This plan implements those five improvements in strict TDD order.
 
 ---
 
-### 5. Param count feedback
+### 5. Status feedback below the result box
 
-**What:** When params are stripped, display how many were removed — e.g. "2 params removed" — in a small note below the output. For a clean URL, show nothing extra. For invalid input, show nothing.
+**What:** Move all validation state messages — "already clean", "not a valid URL" — out of the result `<output>` box and into a small note element below it. Additionally, when params are stripped, show how many were removed (e.g. "2 params removed") in that same element. The `<output>` box itself shows only the processed URL (or is empty when there is no result to display).
 
-**Why:** "Stripped" state currently gives no indication of how much was removed. Knowing that 4 tracking params were stripped is more satisfying and informative than a plain clean URL appearing. V1 showed this in a meta row.
+**Why (param count):** "Stripped" state currently gives no indication of how much was removed. Knowing that 4 tracking params were stripped is more satisfying and informative than a plain clean URL appearing. V1 showed this in a meta row.
+
+**Why (state messages outside the box):** On small mobile screens, fitting a placeholder like `[stripped URL will appear here]` alongside state text ("already clean", "not a valid URL") inside the box causes wrapping and makes the UI hard to read. Separating state messages from the URL display area solves this at all viewport sizes.
 
 **Scope:**
 - `js/url-utils.js` — extend the return value to include `paramCount: number`
 - `tests/url-utils.test.js` — new tests for `paramCount` in the return value
-- `index.html` — add a `<p class="strip-meta">` element below the output
-- `js/app.js` — populate the meta element from `paramCount`
-- `tests/index.test.js` — tests for the meta element content
-- `css/styles.css` — minimal styling for the meta line
+- `index.html` — add a `<p class="url-status">` element below the output
+- `js/app.js` — populate `.url-status` from both `state` and `paramCount`; remove any state message text set directly on `<output>`
+- `tests/index.test.js` — tests for the `.url-status` element content across all states
+- `css/styles.css` — minimal styling for the status line
 
 ---
 
@@ -114,17 +116,21 @@ These two behaviors are implemented together in one handler, so each test is its
 
 ---
 
-### Step 5 — Param count UI
+### Step 5 — Status feedback below the result box
 
-23. Write test: `<p class="strip-meta">` exists in the DOM → **red**
+23. Write test: `<p class="url-status">` exists in the DOM → **red**
 24. Add element to `index.html` → **green** → commit
-25. Write test: after stripping 1 param, `.strip-meta` text is "1 param removed" → **red**
-26. Update `app.js` to populate `.strip-meta` from `paramCount` → **green** → commit
-27. Write test: after stripping 2 params, `.strip-meta` text is "2 params removed" (plural) → **red**
+25. Write test: after stripping 1 param, `.url-status` text is "1 param removed" → **red**
+26. Update `app.js` to populate `.url-status` from `paramCount` → **green** → commit
+27. Write test: after stripping 2 params, `.url-status` text is "2 params removed" (plural) → **red**
 28. Confirm green (already handled by same logic) → commit
-29. Write test: for clean URL, `.strip-meta` is empty or hidden → **red**
-30. Update `app.js` to clear `.strip-meta` for non-stripped states → **green** → commit
-31. Add CSS: small muted text, `font-size: 0.75rem`, `color: var(--muted)`, `text-align: center`
+29. Write test: for a clean URL, `.url-status` text is "already clean" → **red**
+30. Update `app.js` to set `.url-status` to "already clean" for the `clean` state → **green** → commit
+31. Write test: for an invalid URL, `.url-status` text is "not a valid URL" → **red**
+32. Update `app.js` to set `.url-status` to "not a valid URL" for the `invalid` state → **green** → commit
+33. Write test: for empty input, `.url-status` is empty → **red**
+34. Confirm green (already cleared) → commit
+35. Add CSS: small muted text, `font-size: 0.75rem`, `color: var(--muted)`, `text-align: center`
 
 ---
 
@@ -145,14 +151,16 @@ Return type becomes `{ result, state, paramCount }`.
 
 ---
 
-## Param count display rules
+## Status feedback display rules
 
-| State | `.strip-meta` content |
+All state messages live in `.url-status`, outside the `<output>` box. The `<output>` box shows only the processed URL (or is empty).
+
+| State | `.url-status` content |
 |---|---|
 | `stripped` with params | "N param removed" / "N params removed" |
 | `stripped` (tracking hash only, no query) | *(empty — hash strip has no count)* |
-| `clean` | *(empty)* |
-| `invalid` | *(empty)* |
+| `clean` | "already clean" |
+| `invalid` | "not a valid URL" |
 | `empty` | *(empty)* |
 
 ---
@@ -161,9 +169,9 @@ Return type becomes `{ result, state, paramCount }`.
 
 | File | Changes |
 |---|---|
-| `index.html` | `role="status"` + `aria-atomic="true"` on `<output>`; add `<p class="strip-meta">` |
+| `index.html` | `role="status"` + `aria-atomic="true"` on `<output>`; add `<p class="url-status">` below output |
 | `js/url-utils.js` | Add `paramCount` to return value |
-| `js/app.js` | Escape handler; `input.focus()` in clear; paste guard on init; populate `.strip-meta` |
-| `css/styles.css` | `.strip-meta` styles |
+| `js/app.js` | Escape handler; `input.focus()` in clear; paste guard on init; populate `.url-status` from `state` and `paramCount`; remove state text from `<output>` |
+| `css/styles.css` | `.url-status` styles |
 | `tests/url-utils.test.js` | New tests for `paramCount` |
-| `tests/index.test.js` | New tests for Escape, focus, paste guard, meta content |
+| `tests/index.test.js` | New tests for Escape, focus, paste guard, `.url-status` content across all states |
