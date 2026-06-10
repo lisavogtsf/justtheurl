@@ -8,9 +8,10 @@ import { initPlusApp } from "../js/app-plus.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-function loadPlusPage() {
+function loadPlusPage(search = "") {
   const html = readFileSync(resolve(__dirname, "../justtheurlplus/index.html"), "utf-8");
-  return new JSDOM(html).window.document;
+  const url = "http://localhost/justtheurlplus" + search;
+  return new JSDOM(html, { url }).window.document;
 }
 
 function makeClipboard() {
@@ -93,6 +94,42 @@ describe("justtheurlplus smart stripping", () => {
     const doc = setupDoc();
     typeUrl(doc, "https://example.com/page?utm_source=x");
     expect(doc.querySelector("output").dataset.state).toBe("stripped");
+  });
+});
+
+describe("justtheurlplus url= preload", () => {
+  const originalUrl =
+    "https://www.youtube.com/watch?v=dQw4w9WgXcQ&utm_source=newsletter";
+
+  function setupPreloadDoc() {
+    const search = "?url=" + encodeURIComponent(originalUrl);
+    const doc = loadPlusPage(search);
+    doc.defaultView.navigator.clipboard = makeClipboard();
+    doc.defaultView.matchMedia = () => ({ matches: false });
+    initPlusApp(doc);
+    return doc;
+  }
+
+  it("pre-populates the input with the original URL from url= param", () => {
+    const doc = setupPreloadDoc();
+    expect(doc.querySelector('input[type="url"]').value).toBe(originalUrl);
+  });
+
+  it("strips the preloaded URL and shows the result in the output", () => {
+    const doc = setupPreloadDoc();
+    expect(doc.querySelector("output").value).toBe(
+      "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    );
+  });
+
+  it("shows the param count in status after preloading", () => {
+    const doc = setupPreloadDoc();
+    expect(doc.querySelector(".url-status").textContent).toBe("1 param removed");
+  });
+
+  it("leaves the input empty when no url= param is present", () => {
+    const doc = setupDoc();
+    expect(doc.querySelector('input[type="url"]').value).toBe("");
   });
 });
 

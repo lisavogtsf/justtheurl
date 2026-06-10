@@ -24,11 +24,12 @@ export function initApp(doc) {
     }, 2000);
   }
 
-  function updateStatus(state, paramCount, warn = false) {
+  function updateStatus(state, paramCount, warn = false, rawUrl = "") {
     statusEl.dataset.state = state;
     if (state === "stripped" && warn) {
+      const href = "/justtheurlplus?url=" + encodeURIComponent(rawUrl);
       statusEl.innerHTML =
-        '⚠ Stripping may break this URL — <a href="/justtheurlplus" class="warn-link">try the smarter version →</a>';
+        `⚠ Stripping may break this URL — <a href="${href}" class="warn-link">try the smarter version →</a>`;
     } else if (state === "stripped" && paramCount > 0) {
       statusEl.textContent = paramCount === 1 ? "1 param removed" : `${paramCount} params removed`;
     } else if (state === "clean") {
@@ -55,7 +56,7 @@ export function initApp(doc) {
     output.value = result;
     output.dataset.state = state;
     const warn = state === "stripped" && result ? shouldWarn(new URL(result).hostname) : false;
-    updateStatus(state, paramCount, warn);
+    updateStatus(state, paramCount, warn, input.value);
     if (state !== "invalid" && result && result !== lastCopied) {
       copyToClipboard(result);
       lastCopied = result;

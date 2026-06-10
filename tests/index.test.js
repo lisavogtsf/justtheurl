@@ -542,7 +542,15 @@ describe('warn-domain status', () => {
     typeUrl(doc, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&utm_source=newsletter');
     const link = doc.querySelector('.url-status a');
     expect(link).not.toBeNull();
-    expect(link.getAttribute('href')).toBe('/justtheurlplus');
+    expect(link.getAttribute('href')).toContain('/justtheurlplus');
+  });
+
+  it('warning link encodes the original URL as a url= query param', () => {
+    const originalUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&utm_source=newsletter';
+    const doc = setupDoc();
+    typeUrl(doc, originalUrl);
+    const href = doc.querySelector('.url-status a').getAttribute('href');
+    expect(href).toContain('url=' + encodeURIComponent(originalUrl));
   });
 
   it('shows normal param count for a non-warn-domain URL', () => {

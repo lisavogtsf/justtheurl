@@ -109,4 +109,10 @@ export function initPlusApp(doc) {
       applyLightTheme();
     }
   });
+
+  const preloadUrl = new URLSearchParams(doc.defaultView.location.search).get("url");
+  if (preloadUrl) {
+    input.value = preloadUrl;
+    input.dispatchEvent(new doc.defaultView.Event("input"));
+  }
 }
