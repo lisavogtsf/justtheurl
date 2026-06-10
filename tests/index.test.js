@@ -224,6 +224,19 @@ describe('initApp', () => {
 
       expect(doc.querySelector('input.url-input').value).toBe('https://example.com/page?foo=bar');
     });
+
+    it('when clipboard read is denied, shows "clipboard access denied" in .url-status', async () => {
+      const doc = loadPage();
+      doc.defaultView.navigator.clipboard = {
+        readText: vi.fn().mockRejectedValue(new Error('NotAllowedError')),
+        writeText: vi.fn().mockResolvedValue(undefined),
+      };
+      initApp(doc);
+
+      await doc.querySelector('button#paste').click();
+
+      expect(doc.querySelector('.url-status').textContent).toBe('clipboard access denied');
+    });
   });
 
   describe('open button', () => {

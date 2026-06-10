@@ -66,9 +66,13 @@ export function initApp(doc) {
     pasteBtn.hidden = true;
   }
   pasteBtn.addEventListener("click", async () => {
-    const text = await doc.defaultView.navigator.clipboard.readText();
-    input.value = text;
-    input.dispatchEvent(new doc.defaultView.Event("input"));
+    try {
+      const text = await doc.defaultView.navigator.clipboard.readText();
+      input.value = text;
+      input.dispatchEvent(new doc.defaultView.Event("input"));
+    } catch {
+      statusEl.textContent = "clipboard access denied";
+    }
   });
 
   copyBtn.addEventListener("click", () => {
