@@ -37,9 +37,12 @@ export function initApp(doc) {
     }
   }
 
+  let lastCopied = "";
+
   function clearAll() {
     input.value = "";
     output.value = "";
+    lastCopied = "";
     updateStatus("empty", 0);
     input.focus();
   }
@@ -49,7 +52,10 @@ export function initApp(doc) {
     output.value = result;
     output.dataset.state = state;
     updateStatus(state, paramCount);
-    if (state !== "invalid" && result) copyToClipboard(result);
+    if (state !== "invalid" && result && result !== lastCopied) {
+      copyToClipboard(result);
+      lastCopied = result;
+    }
   });
 
   input.addEventListener("keydown", (e) => {

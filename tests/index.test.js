@@ -354,6 +354,18 @@ describe('initApp', () => {
 
       expect(writeText).not.toHaveBeenCalled();
     });
+
+    it('does not write to the clipboard again when the same URL is typed a second time', () => {
+      const doc = loadPage();
+      const writeText = vi.fn().mockResolvedValue(undefined);
+      doc.defaultView.navigator.clipboard = { writeText };
+      initApp(doc);
+
+      typeUrl(doc, 'https://example.com/page?foo=bar');
+      typeUrl(doc, 'https://example.com/page?foo=bar');
+
+      expect(writeText).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('copy button', () => {
