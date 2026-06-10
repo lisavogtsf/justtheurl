@@ -85,6 +85,25 @@ New file `js/app-plus.js` — identical to `js/app.js` but imports and calls `sm
 3. `smartStripUrl`: tests + `url-utils-plus.js`
 4. `/justtheurlplus` page: `justtheurlplus.html` + `app-plus.js` + DOM tests
 
+## Addendum: implementation changes from plan
+
+### Deviations from the plan
+
+**smart strip logic changed**: The plan said "for any param not in either list, keep it (conservative)." During implementation a test for Bing (`form=QBLH&qs=n`) revealed this was wrong for known domains. The final logic is: for domains in `FUNCTIONAL_PARAMS`, remove everything *not* in the functional list (aggressive); for unknown domains, remove only confirmed tracking params (conservative). This is a better user experience — on known domains we know exactly what's needed.
+
+**`justtheurlplus.html` moved to `justtheurlplus/index.html`**: Needed for the Python dev server (`python3 -m http.server`) to serve the page at `/justtheurlplus`. Python doesn't do extensionless URL resolution; a directory with `index.html` triggers a redirect instead. All asset paths updated to root-relative (`/css/styles.css`, `/js/app-plus.js`, etc.).
+
+### Features added beyond the plan
+
+**Warning link encodes the original URL** (`?url=`): Clicking "try the smarter version →" passes the full original URL as a query parameter so the plus page pre-populates and strips immediately — the user doesn't have to paste again. `history.replaceState` clears the query param from the address bar when the user clicks Clear or presses Escape.
+
+**Plus page copy differentiation** (five additional commits):
+- Input placeholder: `Paste a URL — tracking removed, essentials kept`
+- Status messages: `1 tracking param removed` / `already clean — no known tracking params`
+- Footer back-link: `← simple stripping` linking to `/`
+- Screen reader label: `URL to remove tracking from`
+- Output `::before` placeholder: `[URL with tracking removed]` via `plus-page` body class + CSS override
+
 ## Verification
 
 - `npm test` passes with no stderr output after each commit
