@@ -60,20 +60,19 @@ export function initApp(doc) {
     if (output.value) doc.defaultView.open(output.value, "_blank");
   });
 
+  function clearAll() {
+    input.value = "";
+    output.value = "";
+    updateStatus("empty", 0);
+    input.focus();
+  }
+
   input.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      input.value = "";
-      output.value = "";
-      input.focus();
-    }
+    if (e.key === "Escape") clearAll();
   });
 
   const clearBtn = doc.querySelector("button#clear");
-  clearBtn.addEventListener("click", () => {
-    input.value = "";
-    output.value = "";
-    input.focus();
-  });
+  clearBtn.addEventListener("click", clearAll);
 
   const themeToggle = doc.querySelector("button#theme-toggle");
   const sunIcon = themeToggle.querySelector(".icon-sun");

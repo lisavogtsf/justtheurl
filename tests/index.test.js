@@ -352,7 +352,29 @@ describe('initApp', () => {
     expect(doc.querySelector('output').value).toBe('');
   });
 
-  it('after clicking the clear button, focus returns to the input', () => {
+  it('after clicking clear on a clean URL, .url-status is empty', () => {
+    const doc = loadPage();
+    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
+    initApp(doc);
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'https://example.com/page';
+    input.dispatchEvent(new doc.defaultView.Event('input'));
+    doc.querySelector('button#clear').click();
+    expect(doc.querySelector('.url-status').textContent).toBe('');
+  });
+
+  it('after pressing Escape on a clean URL, .url-status is empty', () => {
+    const doc = loadPage();
+    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
+    initApp(doc);
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'https://example.com/page';
+    input.dispatchEvent(new doc.defaultView.Event('input'));
+    input.dispatchEvent(new doc.defaultView.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    expect(doc.querySelector('.url-status').textContent).toBe('');
+  });
+
+  it('after clicking clear on a clean URL, .url-status is empty', () => {
     const doc = loadPage();
     doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
     initApp(doc);
