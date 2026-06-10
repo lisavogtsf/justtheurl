@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 function loadPlusPage() {
-  const html = readFileSync(resolve(__dirname, "../justtheurlplus.html"), "utf-8");
+  const html = readFileSync(resolve(__dirname, "../justtheurlplus/index.html"), "utf-8");
   return new JSDOM(html).window.document;
 }
 
