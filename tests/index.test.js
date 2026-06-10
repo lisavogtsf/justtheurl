@@ -194,6 +194,16 @@ describe('page layout', () => {
     const doc = loadPage();
     expect(doc.querySelector('link[rel="icon"]')).not.toBeNull();
   });
+
+  it('has a header element containing the h1', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('header h1')).not.toBeNull();
+  });
+
+  it('has a header element containing the theme toggle', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('header button#theme-toggle')).not.toBeNull();
+  });
 });
 
 describe('open button', () => {
