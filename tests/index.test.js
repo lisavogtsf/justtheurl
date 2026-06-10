@@ -340,6 +340,14 @@ describe('initApp', () => {
     expect(doc.querySelector('output').value).toBe('');
   });
 
+  it('after clicking the clear button, focus returns to the input', () => {
+    const doc = loadPage();
+    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
+    initApp(doc);
+    doc.querySelector('button#clear').click();
+    expect(doc.activeElement).toBe(doc.querySelector('input[type="url"]'));
+  });
+
   it('when the clear button is clicked, clears the input and output', () => {
     const doc = loadPage();
     doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };

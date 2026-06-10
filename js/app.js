@@ -54,6 +54,7 @@ export function initApp(doc) {
   clearBtn.addEventListener("click", () => {
     input.value = "";
     output.value = "";
+    input.focus();
   });
 
   const themeToggle = doc.querySelector("button#theme-toggle");
