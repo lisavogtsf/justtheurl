@@ -127,6 +127,11 @@ describe('result display', () => {
     const doc = loadPage();
     expect(doc.querySelector('p.url-status')).not.toBeNull();
   });
+
+  it('has a for attribute linking it to the url input', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('output').getAttribute('for')).toBe('url-input');
+  });
 });
 
 describe('copy button', () => {
