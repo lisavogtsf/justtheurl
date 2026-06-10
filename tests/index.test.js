@@ -551,6 +551,6 @@ describe('footer', () => {
 
   it('contains the privacy text', () => {
     const doc = loadPage();
-    expect(doc.querySelector('footer').textContent).toContain('Your URLs never leave your browser.');
+    expect(doc.querySelector('footer').textContent).toContain('All URLs are processed locally. Nothing is sent anywhere.');
   });
 });
