@@ -188,4 +188,15 @@ describe("justtheurlplus page structure", () => {
       "All URLs are processed locally",
     );
   });
+
+  it("has a back-link to the main page", () => {
+    const doc = loadPlusPage();
+    expect(doc.querySelector('a[href="/"]')).not.toBeNull();
+  });
+
+  it("back-link text mentions simple stripping", () => {
+    const doc = loadPlusPage();
+    const link = doc.querySelector('a[href="/"]');
+    expect(link.textContent).toContain("simple");
+  });
 });
