@@ -461,3 +461,29 @@ describe('initApp', () => {
     });
   });
 });
+describe('footer', () => {
+  it('has a footer element', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('footer')).not.toBeNull();
+  });
+
+  it('has a link to activistchecklist.org/links/', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('footer a[href="https://activistchecklist.org/links/"]')).not.toBeNull();
+  });
+
+  it('has a link to github.com/lisavogtsf/', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('footer a[href="https://github.com/lisavogtsf/"]')).not.toBeNull();
+  });
+
+  it('has a link to the justtheurl source code repo', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('footer a[href="https://github.com/lisavogtsf/justtheurl"]')).not.toBeNull();
+  });
+
+  it('contains the privacy text', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('footer').textContent).toContain('Your URLs never leave your browser.');
+  });
+});
