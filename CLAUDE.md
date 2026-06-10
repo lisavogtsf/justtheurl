@@ -40,6 +40,14 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 
 This distinguishes agent-made commits from commits made manually by the user.
 
+**One logical change per commit. Never batch unrelated changes.**
+
+A commit should do exactly one thing:
+- one new behavior: a test and the code that makes it pass
+- one refactor: a single cleanup with no behavior change
+
+If a plan lists N steps, expect N commits. Do not combine steps because they touch the same file, feel small, or belong to the same feature.
+
 ## Code style
 
 - **Formatter: Prettier.** All files (JS, CSS, HTML) should follow Prettier's default output. Do not write code that would conflict with Prettier formatting.
