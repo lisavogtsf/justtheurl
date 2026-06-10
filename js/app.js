@@ -31,6 +31,9 @@ export function initApp(doc) {
   });
 
   const pasteBtn = doc.querySelector("button#paste");
+  if (!doc.defaultView.navigator.clipboard?.readText) {
+    pasteBtn.hidden = true;
+  }
   pasteBtn.addEventListener("click", async () => {
     const text = await doc.defaultView.navigator.clipboard.readText();
     input.value = text;

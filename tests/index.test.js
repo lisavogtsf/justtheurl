@@ -181,6 +181,13 @@ describe('open button', () => {
 });
 
 describe('initApp', () => {
+  it('hides the paste button when navigator.clipboard is unavailable', () => {
+    const doc = loadPage();
+    doc.defaultView.navigator.clipboard = undefined;
+    initApp(doc);
+    expect(doc.querySelector('button#paste').hidden).toBe(true);
+  });
+
   it('when the paste button is clicked, reads from the clipboard and populates the input', async () => {
     const doc = loadPage();
     doc.defaultView.navigator.clipboard = {
