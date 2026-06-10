@@ -99,6 +99,11 @@ describe('result display', () => {
     const doc = loadPage();
     expect(doc.querySelector('output').getAttribute('role')).toBe('status');
   });
+
+  it('has aria-atomic="true" on the output element', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('output').getAttribute('aria-atomic')).toBe('true');
+  });
 });
 
 describe('copy button', () => {
