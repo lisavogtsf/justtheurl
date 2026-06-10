@@ -131,6 +131,19 @@ describe("justtheurlplus url= preload", () => {
     const doc = setupDoc();
     expect(doc.querySelector('input[type="url"]').value).toBe("");
   });
+
+  it("clears the url= query param from the address bar when the clear button is clicked", () => {
+    const doc = setupPreloadDoc();
+    doc.querySelector("button#clear").click();
+    expect(doc.defaultView.location.search).toBe("");
+  });
+
+  it("clears the url= query param from the address bar when Escape is pressed", () => {
+    const doc = setupPreloadDoc();
+    const input = doc.querySelector('input[type="url"]');
+    input.dispatchEvent(new doc.defaultView.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    expect(doc.defaultView.location.search).toBe("");
+  });
 });
 
 describe("justtheurlplus page structure", () => {

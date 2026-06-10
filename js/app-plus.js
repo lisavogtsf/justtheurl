@@ -44,6 +44,9 @@ export function initPlusApp(doc) {
     output.value = "";
     lastCopied = "";
     updateStatus("empty", 0);
+    if (doc.defaultView.location.search) {
+      doc.defaultView.history.replaceState(null, "", doc.defaultView.location.pathname);
+    }
     input.focus();
   }
 
