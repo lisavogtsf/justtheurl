@@ -437,6 +437,16 @@ describe('initApp', () => {
     expect(doc.querySelector('output').dataset.state).toBe('stripped');
   });
 
+  it('after stripping 2 params, .url-status text is "2 params removed"', () => {
+    const doc = loadPage();
+    doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
+    initApp(doc);
+    const input = doc.querySelector('input[type="url"]');
+    input.value = 'https://example.com/page?foo=bar&baz=qux';
+    input.dispatchEvent(new doc.defaultView.Event('input'));
+    expect(doc.querySelector('.url-status').textContent).toBe('2 params removed');
+  });
+
   it('after stripping 1 param, .url-status text is "1 param removed"', () => {
     const doc = loadPage();
     doc.defaultView.navigator.clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
