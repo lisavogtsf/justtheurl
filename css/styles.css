@@ -171,6 +171,44 @@ main {
   content: '[URL with tracking removed]';
 }
 
+.plus-page {
+  --bg: #0e0c1a;
+  --surface: #16132b;
+  --border: #3a3356;
+}
+
+[data-theme="light"] .plus-page {
+  --bg: #f0eeff;
+  --surface: #faf9ff;
+  --border: #c4b8f0;
+}
+
+.plus-page .url-input,
+.plus-page .url-output {
+  border-width: 3px;
+}
+
+.plus-page .input-row button {
+  border-width: 3px;
+}
+
+.plus-page .url-output {
+  border-style: solid;
+  border-color: var(--accent);
+}
+
+.plus-page .title__word--plus {
+  color: var(--accent);
+}
+
+.plus-page .mode-nav__active {
+  color: var(--accent);
+}
+
+.plus-page .copy-btn {
+  font-weight: 800;
+}
+
 .url-status {
   font-size: 0.75rem;
   color: var(--muted);
