@@ -3,13 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>justtheurl+</title>
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <title>Option B — Purple-tinted background</title>
   <link rel="stylesheet" href="/css/styles.css">
-  <script type="module">
-    import { initPlusApp } from '/js/app-plus.js';
-    initPlusApp(document);
-  </script>
+  <style>
+    /* Option B: purple-tinted CSS variable overrides */
+    .plus-page {
+      --bg: #0e0c1a;
+      --surface: #16132b;
+      --border: #3a3356;
+    }
+  </style>
 </head>
 <body class="plus-page">
   <header class="site-header">
@@ -21,34 +24,26 @@
       <span aria-hidden="true">|</span>
       <span class="mode-nav__active" aria-current="page">smarter +</span>
     </nav>
-    <button id="theme-toggle" aria-label="Toggle theme">
-    <svg class="icon-moon" hidden width="20" height="20">
-      <use href="/icons/icons.svg#icon-moon"/>
-    </svg>
-    <svg class="icon-sun" width="20" height="20">
-      <use href="/icons/icons.svg#icon-sun"/>
-    </svg>
-  </button>
   </header>
   <main>
     <label for="url-input" class="sr-only">URL to remove tracking from</label>
     <div class="input-row">
-      <input type="url" id="url-input" class="url-input" placeholder="Paste a URL — tracking removed, essentials kept" autofocus>
-      <button id="paste" aria-label="Paste from clipboard" title="Paste from clipboard">
+      <input type="url" id="url-input" class="url-input" placeholder="Paste a URL — tracking removed, essentials kept">
+      <button aria-label="Paste from clipboard" title="Paste from clipboard">
         <svg width="16" height="16"><use href="/icons/icons.svg#icon-paste"/></svg>
       </button>
-      <button id="clear" aria-label="Clear input" title="Clear input">
+      <button aria-label="Clear input" title="Clear input">
         <svg width="16" height="16"><use href="/icons/icons.svg#icon-clear"/></svg>
       </button>
     </div>
-    <output class="url-output" for="url-input" aria-live="polite" role="status" aria-atomic="true"></output>
-    <p class="url-status"></p>
+    <output class="url-output" aria-live="polite" role="status" aria-atomic="true">https://www.youtube.com/watch?v=dQw4w9WgXcQ</output>
+    <p class="url-status" data-state="stripped">1 tracking param removed</p>
     <div class="action-row">
-      <button id="copy" class="copy-btn" title="Copy">
+      <button class="copy-btn" title="Copy">
         <svg width="16" height="16"><use href="/icons/icons.svg#icon-copy"/></svg>
         <span class="copy-label">Copy</span>
       </button>
-      <button id="open" class="open-btn" title="Open">
+      <button class="open-btn" title="Open">
         <svg width="16" height="16"><use href="/icons/icons.svg#icon-open"/></svg>
         Open
       </button>
@@ -57,7 +52,6 @@
   <footer class="site-footer">
     <p>Removes only tracking — keeps params your URL needs.</p>
     <p>All URLs are processed locally. Nothing is sent anywhere.</p>
-    <p>© 2026 <a href="https://github.com/lisavogtsf/">Lisa Vogt</a> (and Claude Code), <a href="https://github.com/lisavogtsf/justtheurl">source code</a></p>
   </footer>
 </body>
 </html>

@@ -25,7 +25,7 @@ export function initApp(doc) {
   }
 
   function updateStatus(state, paramCount, warn = false, rawUrl = "") {
-    statusEl.dataset.state = state;
+    statusEl.dataset.state = warn ? "warn" : state;
     if (state === "stripped" && warn) {
       const href = "/justtheurlplus?url=" + encodeURIComponent(rawUrl);
       statusEl.innerHTML =
