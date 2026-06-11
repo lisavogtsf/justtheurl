@@ -114,6 +114,12 @@ main {
       border-color: var(--accent);
     }
   }
+
+  #paste svg,
+  #clear svg {
+    width: 21px;
+    height: 21px;
+  }
 }
 
 .url-input {
