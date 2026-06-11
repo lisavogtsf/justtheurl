@@ -224,6 +224,11 @@ describe("justtheurlplus page structure", () => {
     );
   });
 
+  it("footer does not contain the back-link now that mode-nav provides it", () => {
+    const doc = loadPlusPage();
+    expect(doc.querySelector("footer").textContent).not.toContain("← simple stripping");
+  });
+
   it("has a back-link to the main page", () => {
     const doc = loadPlusPage();
     expect(doc.querySelector('a[href="/"]')).not.toBeNull();
