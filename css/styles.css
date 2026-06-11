@@ -31,6 +31,7 @@
   --accent: #6366f1;
   --accent-hover: #4f46e5;
   --error: #ef4444;
+  --warning: #eab308;
 }
 
 [data-theme="light"] {
@@ -42,6 +43,7 @@
   --accent: #4f46e5;
   --accent-hover: #4338ca;
   --error: #dc2626;
+  --warning: #a16207;
 }
 
 body {
@@ -179,6 +181,16 @@ main {
     color: var(--error);
     font-size: 0.875rem;
     font-weight: 500;
+  }
+
+  &[data-state='warn'] {
+    color: var(--warning);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  &[data-state='warn'] .warn-link {
+    color: var(--accent);
   }
 }
 
