@@ -1,3 +1,18 @@
+const WARN_DOMAINS = new Set([
+  "youtube.com",
+  "youtu.be",
+  "google.com",
+  "bing.com",
+  "duckduckgo.com",
+]);
+
+export function shouldWarn(hostname) {
+  for (const domain of WARN_DOMAINS) {
+    if (hostname === domain || hostname.endsWith("." + domain)) return true;
+  }
+  return false;
+}
+
 // A hash fragment is treated as a tracking param if it contains "=",
 // indicating a key=value pair (e.g. #ref=newsletter, #utm_source=twitter, #_=_).
 // Plain anchors like #section-2 or #top do not contain "=" and are left alone.

@@ -1,6 +1,6 @@
-import { stripQueryParams, shouldWarn } from "./url-utils.js";
+import { smartStripUrl } from "./url-utils-plus.js";
 
-export function initApp(doc) {
+export function initPlusApp(doc) {
   const input = doc.querySelector('input[type="url"]');
   const output = doc.querySelector("output");
   const statusEl = doc.querySelector(".url-status");
@@ -24,16 +24,13 @@ export function initApp(doc) {
     }, 2000);
   }
 
-  function updateStatus(state, paramCount, warn = false, rawUrl = "") {
+  function updateStatus(state, paramCount) {
     statusEl.dataset.state = state;
-    if (state === "stripped" && warn) {
-      const href = "/justtheurlplus?url=" + encodeURIComponent(rawUrl);
-      statusEl.innerHTML =
-        `⚠ Stripping may break this URL — <a href="${href}" class="warn-link">try the smarter version →</a>`;
-    } else if (state === "stripped" && paramCount > 0) {
-      statusEl.textContent = paramCount === 1 ? "1 param removed" : `${paramCount} params removed`;
+    if (state === "stripped" && paramCount > 0) {
+      statusEl.textContent =
+        paramCount === 1 ? "1 tracking param removed" : `${paramCount} tracking params removed`;
     } else if (state === "clean") {
-      statusEl.textContent = "already clean";
+      statusEl.textContent = "already clean — no known tracking params";
     } else if (state === "invalid") {
       statusEl.textContent = "not a valid URL";
     } else {
@@ -48,15 +45,17 @@ export function initApp(doc) {
     output.value = "";
     lastCopied = "";
     updateStatus("empty", 0);
+    if (doc.defaultView.location.search) {
+      doc.defaultView.history.replaceState(null, "", doc.defaultView.location.pathname);
+    }
     input.focus();
   }
 
   input.addEventListener("input", () => {
-    const { result, state, paramCount } = stripQueryParams(input.value);
+    const { result, state, paramCount } = smartStripUrl(input.value);
     output.value = result;
     output.dataset.state = state;
-    const warn = state === "stripped" && result ? shouldWarn(new URL(result).hostname) : false;
-    updateStatus(state, paramCount, warn, input.value);
+    updateStatus(state, paramCount);
     if (state !== "invalid" && result && result !== lastCopied) {
       copyToClipboard(result);
       lastCopied = result;
@@ -114,4 +113,10 @@ export function initApp(doc) {
       applyLightTheme();
     }
   });
+
+  const preloadUrl = new URLSearchParams(doc.defaultView.location.search).get("url");
+  if (preloadUrl) {
+    input.value = preloadUrl;
+    input.dispatchEvent(new doc.defaultView.Event("input"));
+  }
 }

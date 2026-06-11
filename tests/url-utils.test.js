@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { stripQueryParams } from "../js/url-utils.js";
+import { stripQueryParams, shouldWarn } from "../js/url-utils.js";
 
 describe("stripQueryParams", () => {
   it("strips query params from a URL", () => {
@@ -118,5 +118,55 @@ describe("stripQueryParams", () => {
       const { paramCount } = stripQueryParams("https://example.com/page?foo=bar#ref=x&stuff=more");
       expect(paramCount).toBe(3);
     });
+  });
+});
+
+describe("shouldWarn", () => {
+  it("returns true for youtube.com", () => {
+    expect(shouldWarn("youtube.com")).toBe(true);
+  });
+
+  it("returns true for www.youtube.com", () => {
+    expect(shouldWarn("www.youtube.com")).toBe(true);
+  });
+
+  it("returns true for youtu.be", () => {
+    expect(shouldWarn("youtu.be")).toBe(true);
+  });
+
+  it("returns true for google.com", () => {
+    expect(shouldWarn("google.com")).toBe(true);
+  });
+
+  it("returns true for www.google.com", () => {
+    expect(shouldWarn("www.google.com")).toBe(true);
+  });
+
+  it("returns true for maps.google.com", () => {
+    expect(shouldWarn("maps.google.com")).toBe(true);
+  });
+
+  it("returns true for bing.com", () => {
+    expect(shouldWarn("bing.com")).toBe(true);
+  });
+
+  it("returns true for www.bing.com", () => {
+    expect(shouldWarn("www.bing.com")).toBe(true);
+  });
+
+  it("returns true for duckduckgo.com", () => {
+    expect(shouldWarn("duckduckgo.com")).toBe(true);
+  });
+
+  it("returns false for example.com", () => {
+    expect(shouldWarn("example.com")).toBe(false);
+  });
+
+  it("returns false for an empty string", () => {
+    expect(shouldWarn("")).toBe(false);
+  });
+
+  it("returns false for a domain that contains a warn-domain as a substring but is not a subdomain", () => {
+    expect(shouldWarn("notyoutube.com")).toBe(false);
   });
 });

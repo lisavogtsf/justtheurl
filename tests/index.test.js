@@ -528,6 +528,44 @@ describe('initApp', () => {
     });
   });
 });
+describe('warn-domain status', () => {
+  it('shows warning text instead of param count when a warn-domain URL has params stripped', () => {
+    const doc = setupDoc();
+    typeUrl(doc, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&utm_source=newsletter');
+    const status = doc.querySelector('.url-status');
+    expect(status.textContent).not.toBe('2 params removed');
+    expect(status.textContent).toContain('may break');
+  });
+
+  it('includes a link to /justtheurlplus in the warning', () => {
+    const doc = setupDoc();
+    typeUrl(doc, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&utm_source=newsletter');
+    const link = doc.querySelector('.url-status a');
+    expect(link).not.toBeNull();
+    expect(link.getAttribute('href')).toContain('/justtheurlplus');
+  });
+
+  it('warning link encodes the original URL as a url= query param', () => {
+    const originalUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&utm_source=newsletter';
+    const doc = setupDoc();
+    typeUrl(doc, originalUrl);
+    const href = doc.querySelector('.url-status a').getAttribute('href');
+    expect(href).toContain('url=' + encodeURIComponent(originalUrl));
+  });
+
+  it('shows normal param count for a non-warn-domain URL', () => {
+    const doc = setupDoc();
+    typeUrl(doc, 'https://example.com/page?utm_source=newsletter');
+    expect(doc.querySelector('.url-status').textContent).toBe('1 param removed');
+  });
+
+  it('shows "already clean" (no warning) when a warn-domain URL has no params', () => {
+    const doc = setupDoc();
+    typeUrl(doc, 'https://www.youtube.com/watch');
+    expect(doc.querySelector('.url-status').textContent).toBe('already clean');
+  });
+});
+
 describe('footer', () => {
   it('has a footer element', () => {
     const doc = loadPage();
