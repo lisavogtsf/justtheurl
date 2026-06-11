@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Option A+B — Heavy strokes + purple background</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    /* Option A+B: purple bg + heavier strokes */
+    .plus-page {
+      --bg: #0e0c1a;
+      --surface: #16132b;
+      --border: #3a3356;
+    }
+    .plus-page .url-input,
+    .plus-page .url-output {
+      border-width: 3px;
+    }
+    .plus-page .input-row button {
+      border-width: 3px;
+    }
+    .plus-page .url-output {
+      border-style: solid;
+      border-color: var(--accent);
+    }
+    .plus-page .title__word--plus {
+      color: var(--accent);
+    }
+    .plus-page .mode-nav__active {
+      color: var(--accent);
+    }
+    .plus-page .copy-btn {
+      font-weight: 800;
+    }
+  </style>
+</head>
+<body class="plus-page">
+  <header class="site-header">
+    <h1>
+      <span class="title__word--secondary">just</span><span class="title__word--tertiary">the</span><span class="title__word--primary">url</span><span class="title__word--plus">+</span>
+    </h1>
+    <nav class="mode-nav" aria-label="Stripping mode">
+      <a href="/" class="mode-nav__link">simple</a>
+      <span aria-hidden="true">|</span>
+      <span class="mode-nav__active" aria-current="page">smarter +</span>
+    </nav>
+  </header>
+  <main>
+    <label for="url-input" class="sr-only">URL to remove tracking from</label>
+    <div class="input-row">
+      <input type="url" id="url-input" class="url-input" placeholder="Paste a URL — tracking removed, essentials kept">
+      <button aria-label="Paste from clipboard" title="Paste from clipboard">
+        <svg width="16" height="16"><use href="/icons/icons.svg#icon-paste"/></svg>
+      </button>
+      <button aria-label="Clear input" title="Clear input">
+        <svg width="16" height="16"><use href="/icons/icons.svg#icon-clear"/></svg>
+      </button>
+    </div>
+    <output class="url-output" aria-live="polite" role="status" aria-atomic="true">https://www.youtube.com/watch?v=dQw4w9WgXcQ</output>
+    <p class="url-status" data-state="stripped">1 tracking param removed</p>
+    <div class="action-row">
+      <button class="copy-btn" title="Copy">
+        <svg width="16" height="16"><use href="/icons/icons.svg#icon-copy"/></svg>
+        <span class="copy-label">Copy</span>
+      </button>
+      <button class="open-btn" title="Open">
+        <svg width="16" height="16"><use href="/icons/icons.svg#icon-open"/></svg>
+        Open
+      </button>
+    </div>
+  </main>
+  <footer class="site-footer">
+    <p>Removes only tracking — keeps params your URL needs.</p>
+    <p>All URLs are processed locally. Nothing is sent anywhere.</p>
+  </footer>
+</body>
+</html>
