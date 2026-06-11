@@ -587,6 +587,18 @@ describe('warn-domain status', () => {
     typeUrl(doc, 'https://www.youtube.com/watch');
     expect(doc.querySelector('.url-status').textContent).toBe('already clean');
   });
+
+  it('.url-status has data-state="warn" when a warn-domain URL has params stripped', () => {
+    const doc = setupDoc();
+    typeUrl(doc, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&utm_source=newsletter');
+    expect(doc.querySelector('.url-status').dataset.state).toBe('warn');
+  });
+
+  it('.url-status does not have data-state="warn" for a non-warn-domain URL', () => {
+    const doc = setupDoc();
+    typeUrl(doc, 'https://example.com/page?utm_source=newsletter');
+    expect(doc.querySelector('.url-status').dataset.state).not.toBe('warn');
+  });
 });
 
 describe('footer', () => {
