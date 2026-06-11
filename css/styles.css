@@ -182,6 +182,29 @@ main {
   }
 }
 
+.mode-nav {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+
+.mode-nav__active {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.mode-nav__link {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.mode-nav__link:hover {
+  color: var(--text);
+}
+
 #theme-toggle {
   position: fixed;
   top: 1.25rem;

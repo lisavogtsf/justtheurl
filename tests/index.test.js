@@ -57,6 +57,29 @@ describe('page title', () => {
   });
 });
 
+describe('mode nav', () => {
+  it('has a nav element with aria-label="Stripping mode"', () => {
+    const doc = loadPage();
+    expect(doc.querySelector('nav[aria-label="Stripping mode"]')).not.toBeNull();
+  });
+
+  it('active item has text "simple" and aria-current="page"', () => {
+    const doc = loadPage();
+    const active = doc.querySelector('.mode-nav__active');
+    expect(active).not.toBeNull();
+    expect(active.textContent).toBe('simple');
+    expect(active.getAttribute('aria-current')).toBe('page');
+  });
+
+  it('link item has text "smarter +" and href="/justtheurlplus"', () => {
+    const doc = loadPage();
+    const link = doc.querySelector('.mode-nav__link');
+    expect(link).not.toBeNull();
+    expect(link.textContent).toBe('smarter +');
+    expect(link.getAttribute('href')).toBe('/justtheurlplus');
+  });
+});
+
 describe('url input', () => {
   it('has a URL input field', () => {
     const doc = loadPage();
