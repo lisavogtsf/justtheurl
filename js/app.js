@@ -27,7 +27,7 @@ export function initApp(doc) {
   function updateStatus(state, paramCount, warn = false, rawUrl = "") {
     statusEl.dataset.state = warn ? "warn" : state;
     if (state === "stripped" && warn) {
-      const href = "/justtheurlplus?url=" + encodeURIComponent(rawUrl);
+      const href = "plus/?url=" + encodeURIComponent(rawUrl);
       statusEl.innerHTML =
         `⚠ Stripping may break this URL — <a href="${href}" class="warn-link">try the smarter version →</a>`;
     } else if (state === "stripped" && paramCount > 0) {

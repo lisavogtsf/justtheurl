@@ -71,12 +71,12 @@ describe('mode nav', () => {
     expect(active.getAttribute('aria-current')).toBe('page');
   });
 
-  it('link item has text "smarter +" and href="/justtheurlplus"', () => {
+  it('link item has text "smarter +" and href="plus/"', () => {
     const doc = loadPage();
     const link = doc.querySelector('.mode-nav__link');
     expect(link).not.toBeNull();
     expect(link.textContent).toBe('smarter +');
-    expect(link.getAttribute('href')).toBe('/justtheurlplus');
+    expect(link.getAttribute('href')).toBe('plus/');
   });
 });
 
@@ -560,12 +560,12 @@ describe('warn-domain status', () => {
     expect(status.textContent).toContain('may break');
   });
 
-  it('includes a link to /justtheurlplus in the warning', () => {
+  it('includes a link to plus/ in the warning', () => {
     const doc = setupDoc();
     typeUrl(doc, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&utm_source=newsletter');
     const link = doc.querySelector('.url-status a');
     expect(link).not.toBeNull();
-    expect(link.getAttribute('href')).toContain('/justtheurlplus');
+    expect(link.getAttribute('href')).toContain('plus/');
   });
 
   it('warning link encodes the original URL as a url= query param', () => {
