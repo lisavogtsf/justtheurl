@@ -9,8 +9,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 function loadPlusPage(search = "") {
-  const html = readFileSync(resolve(__dirname, "../justtheurlplus/index.html"), "utf-8");
-  const url = "http://localhost/justtheurlplus" + search;
+  const html = readFileSync(resolve(__dirname, "../plus/index.html"), "utf-8");
+  const url = "http://localhost/plus/" + search;
   return new JSDOM(html, { url }).window.document;
 }
 
@@ -168,12 +168,12 @@ describe("justtheurlplus mode nav", () => {
     expect(active.getAttribute("aria-current")).toBe("page");
   });
 
-  it('link item has text "simple" and href="/"', () => {
+  it('link item has text "simple" and href="../"', () => {
     const doc = loadPlusPage();
     const link = doc.querySelector(".mode-nav__link");
     expect(link).not.toBeNull();
     expect(link.textContent).toBe("simple");
-    expect(link.getAttribute("href")).toBe("/");
+    expect(link.getAttribute("href")).toBe("../");
   });
 });
 
@@ -224,4 +224,29 @@ describe("justtheurlplus page structure", () => {
     );
   });
 
+});
+
+describe("justtheurlplus asset paths", () => {
+  it("links the stylesheet relative to the page so it resolves under any base path", () => {
+    const doc = loadPlusPage();
+    expect(doc.querySelector('link[rel="stylesheet"]').getAttribute("href")).toBe(
+      "../css/styles.css",
+    );
+  });
+
+  it("links the favicon relative to the page so it resolves under any base path", () => {
+    const doc = loadPlusPage();
+    expect(doc.querySelector('link[rel="icon"]').getAttribute("href")).toBe(
+      "../favicon.svg",
+    );
+  });
+
+  it("references icon sprite uses relative to the page", () => {
+    const doc = loadPlusPage();
+    const uses = [...doc.querySelectorAll("use")];
+    expect(uses.length).toBeGreaterThan(0);
+    for (const use of uses) {
+      expect(use.getAttribute("href")).toMatch(/^\.\.\/icons\/icons\.svg#/);
+    }
+  });
 });
