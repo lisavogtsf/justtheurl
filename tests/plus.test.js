@@ -160,19 +160,19 @@ describe("justtheurlplus mode nav", () => {
     expect(doc.querySelector('nav[aria-label="Stripping mode"]')).not.toBeNull();
   });
 
-  it('active item has text "smarter +" and aria-current="page"', () => {
+  it('active item has text "plus" and aria-current="page"', () => {
     const doc = loadPlusPage();
     const active = doc.querySelector(".mode-nav__active");
     expect(active).not.toBeNull();
-    expect(active.textContent).toBe("smarter +");
+    expect(active.textContent).toBe("plus");
     expect(active.getAttribute("aria-current")).toBe("page");
   });
 
-  it('link item has text "simple" and href="../"', () => {
+  it('link item has text "classic" and href="../"', () => {
     const doc = loadPlusPage();
     const link = doc.querySelector(".mode-nav__link");
     expect(link).not.toBeNull();
-    expect(link.textContent).toBe("simple");
+    expect(link.textContent).toBe("classic");
     expect(link.getAttribute("href")).toBe("../");
   });
 });
