@@ -21,7 +21,7 @@ https://example.com/article?utm_source=twitter&utm_medium=social&utm_campaign=la
 
 Plain anchor hashes (e.g. `#section-2`) are preserved — only hash fragments that look like key=value tracking params (containing `=`) are removed.
 
-### Smarter+ mode (`/justtheurlplus`)
+### Smarter+ mode (`/plus`)
 
 Removes only known tracking params (`utm_*`, `fbclid`, `gclid`, `msclkid`, `ttclid`, and others) while preserving query params the site actually needs:
 
@@ -38,7 +38,7 @@ In both modes the cleaned URL is automatically copied to your clipboard the mome
 
 Both modes share the same UI and all features below:
 
-- **Two modes** — simple (`/`) strips everything; smarter+ (`/justtheurlplus`) removes only tracking params and preserves functional ones
+- **Two modes** — simple (`/`) strips everything; smarter+ (`/plus`) removes only tracking params and preserves functional ones
 - **Auto-copy** — cleaned URL is copied to clipboard when the result changes
 - **Paste button** — reads from clipboard directly, no long-press required on mobile
 - **Open button** — opens the cleaned URL in a new tab to verify the destination
@@ -49,7 +49,7 @@ Both modes share the same UI and all features below:
 
 ## Deployment
 
-The live app is at **[lisavogtsf.github.io/justtheurl](https://lisavogtsf.github.io/justtheurl)** (simple mode) and **[lisavogtsf.github.io/justtheurl/justtheurlplus](https://lisavogtsf.github.io/justtheurl/justtheurlplus)** (smarter+ mode).
+The live app is at **[lisavogtsf.github.io/justtheurl](https://lisavogtsf.github.io/justtheurl)** (simple mode) and **[lisavogtsf.github.io/justtheurl/plus](https://lisavogtsf.github.io/justtheurl/plus)** (smarter+ mode).
 
 Both are deployed via GitHub Pages from the `gh-pages` branch root. There is no build step — GitHub Pages serves the HTML files directly. To deploy an update, push the changes to the `gh-pages` branch.
 
@@ -70,7 +70,7 @@ The app is plain HTML, CSS, and JavaScript with no build step. The dev server is
 
 ```
 index.html                  # simple mode page
-justtheurlplus/index.html   # smarter+ mode page
+plus/index.html             # smarter+ mode page
 css/styles.css              # all styling, dark/light theme via CSS custom properties
 js/app.js                   # DOM wiring for simple mode
 js/url-utils.js             # strip-everything URL logic
