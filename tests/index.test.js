@@ -63,19 +63,19 @@ describe('mode nav', () => {
     expect(doc.querySelector('nav[aria-label="Stripping mode"]')).not.toBeNull();
   });
 
-  it('active item has text "simple" and aria-current="page"', () => {
+  it('active item has text "classic" and aria-current="page"', () => {
     const doc = loadPage();
     const active = doc.querySelector('.mode-nav__active');
     expect(active).not.toBeNull();
-    expect(active.textContent).toBe('simple');
+    expect(active.textContent).toBe('classic');
     expect(active.getAttribute('aria-current')).toBe('page');
   });
 
-  it('link item has text "smarter +" and href="plus/"', () => {
+  it('link item has text "plus" and href="plus/"', () => {
     const doc = loadPage();
     const link = doc.querySelector('.mode-nav__link');
     expect(link).not.toBeNull();
-    expect(link.textContent).toBe('smarter +');
+    expect(link.textContent).toBe('plus');
     expect(link.getAttribute('href')).toBe('plus/');
   });
 });
