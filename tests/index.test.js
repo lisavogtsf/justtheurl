@@ -63,19 +63,19 @@ describe('mode nav', () => {
     expect(doc.querySelector('nav[aria-label="Stripping mode"]')).not.toBeNull();
   });
 
-  it('active item has text "simple" and aria-current="page"', () => {
+  it('active item has text "classic" and aria-current="page"', () => {
     const doc = loadPage();
     const active = doc.querySelector('.mode-nav__active');
     expect(active).not.toBeNull();
-    expect(active.textContent).toBe('simple');
+    expect(active.textContent).toBe('classic');
     expect(active.getAttribute('aria-current')).toBe('page');
   });
 
-  it('link item has text "smarter +" and href="plus/"', () => {
+  it('link item has text "plus" and href="plus/"', () => {
     const doc = loadPage();
     const link = doc.querySelector('.mode-nav__link');
     expect(link).not.toBeNull();
-    expect(link.textContent).toBe('smarter +');
+    expect(link.textContent).toBe('plus');
     expect(link.getAttribute('href')).toBe('plus/');
   });
 });
@@ -566,6 +566,13 @@ describe('warn-domain status', () => {
     const link = doc.querySelector('.url-status a');
     expect(link).not.toBeNull();
     expect(link.getAttribute('href')).toContain('plus/');
+  });
+
+  it('warning link text reads "try justtheurl+ →"', () => {
+    const doc = setupDoc();
+    typeUrl(doc, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&utm_source=newsletter');
+    const link = doc.querySelector('.url-status a');
+    expect(link.textContent).toBe('try justtheurl+ →');
   });
 
   it('warning link encodes the original URL as a url= query param', () => {

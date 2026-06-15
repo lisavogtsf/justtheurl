@@ -1,8 +1,8 @@
 # justtheurl
 
-A minimal tool for cleaning tracking parameters from URLs. It has two modes: **simple** strips everything after the `?`, and **smarter+** removes only known tracking params while preserving the query params the site actually needs.
+A minimal tool for cleaning tracking parameters from URLs. It has two modes: **classic** strips everything after the `?`, and **plus** removes only known tracking params while preserving the query params the site actually needs.
 
-![justtheurl stripping query params from a URL](assets/screenshot.png)
+![justtheurl stripping query params from a URL](assets/screenshot-new.png)
 
 ## LLM/AI Attribution
 
@@ -10,7 +10,7 @@ This README.md and the vast majority of this project were authored by Claude Cod
 
 ## What it does
 
-### Simple mode (`/`)
+### Classic mode (`/`)
 
 Strips the entire query string and any tracking hash fragment:
 
@@ -21,7 +21,11 @@ https://example.com/article?utm_source=twitter&utm_medium=social&utm_campaign=la
 
 Plain anchor hashes (e.g. `#section-2`) are preserved — only hash fragments that look like key=value tracking params (containing `=`) are removed.
 
-### Smarter+ mode (`/plus`)
+When a URL that may require query parameters is entered, the site warns that URL stripping may cause the link to break and encourages the user to try `justtheurl+`.
+
+![justtheurl warns about query params from a URL](assets/screenshot-warning.png)
+
+### Plus mode (`/plus`)
 
 Removes only known tracking params (`utm_*`, `fbclid`, `gclid`, `msclkid`, `ttclid`, and others) while preserving query params the site actually needs:
 
@@ -32,13 +36,15 @@ https://www.youtube.com/watch?v=dQw4w9WgXcQ&utm_source=twitter&feature=share
 
 Site-aware functional params are always kept — for example `v`, `t`, and `list` on YouTube; `q` on Google, Bing, and DuckDuckGo; `keywords` on Amazon. For sites without a known functional param set, only params in the tracking denylist are removed.
 
+![justtheurl+ stripping known tracking query params from a URL](assets/screenshot-plus.png)
+
 In both modes the cleaned URL is automatically copied to your clipboard the moment you paste. On mobile the full flow is a single tap: **Paste → done**.
 
 ## Features
 
 Both modes share the same UI and all features below:
 
-- **Two modes** — simple (`/`) strips everything; smarter+ (`/plus`) removes only tracking params and preserves functional ones
+- **Two modes** — classic (`/`) strips everything; plus (`/plus`) removes only tracking params and preserves functional ones
 - **Auto-copy** — cleaned URL is copied to clipboard when the result changes
 - **Paste button** — reads from clipboard directly, no long-press required on mobile
 - **Open button** — opens the cleaned URL in a new tab to verify the destination
@@ -49,7 +55,7 @@ Both modes share the same UI and all features below:
 
 ## Deployment
 
-The live app is at **[lisavogtsf.github.io/justtheurl](https://lisavogtsf.github.io/justtheurl)** (simple mode) and **[lisavogtsf.github.io/justtheurl/plus](https://lisavogtsf.github.io/justtheurl/plus)** (smarter+ mode).
+The live app is at **[lisavogtsf.github.io/justtheurl](https://lisavogtsf.github.io/justtheurl)** (classic mode) and **[lisavogtsf.github.io/justtheurl/plus](https://lisavogtsf.github.io/justtheurl/plus)** (plus mode).
 
 Both are deployed via GitHub Pages from the `gh-pages` branch root. There is no build step — GitHub Pages serves the HTML files directly. To deploy an update, push the changes to the `gh-pages` branch.
 
@@ -69,12 +75,12 @@ The app is plain HTML, CSS, and JavaScript with no build step. The dev server is
 ## Project structure
 
 ```
-index.html                  # simple mode page
-plus/index.html             # smarter+ mode page
+index.html                  # classic mode page
+plus/index.html             # plus mode page
 css/styles.css              # all styling, dark/light theme via CSS custom properties
-js/app.js                   # DOM wiring for simple mode
+js/app.js                   # DOM wiring for classic mode
 js/url-utils.js             # strip-everything URL logic
-js/app-plus.js              # DOM wiring for smarter+ mode
+js/app-plus.js              # DOM wiring for plus mode
 js/url-utils-plus.js        # smart stripping logic (tracking denylist + functional allowlist)
 favicon.svg                 # browser tab icon
 icons/icons.svg             # SVG sprite (all icons defined once, referenced via <use>)
