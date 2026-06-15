@@ -2,7 +2,7 @@
 
 A minimal tool for cleaning tracking parameters from URLs. It has two modes: **classic** strips everything after the `?`, and **plus** removes only known tracking params while preserving the query params the site actually needs.
 
-![justtheurl stripping query params from a URL](assets/screenshot.png)
+![justtheurl stripping query params from a URL](assets/screenshot-new.png)
 
 ## LLM/AI Attribution
 
@@ -21,6 +21,10 @@ https://example.com/article?utm_source=twitter&utm_medium=social&utm_campaign=la
 
 Plain anchor hashes (e.g. `#section-2`) are preserved — only hash fragments that look like key=value tracking params (containing `=`) are removed.
 
+When a URL that may require query parameters is entered, the site warns that URL stripping may cause the link to break and encourages the user to try `justtheurl+`.
+
+![justtheurl warns about query params from a URL](assets/screenshot-warning.png)
+
 ### Plus mode (`/plus`)
 
 Removes only known tracking params (`utm_*`, `fbclid`, `gclid`, `msclkid`, `ttclid`, and others) while preserving query params the site actually needs:
@@ -31,6 +35,8 @@ https://www.youtube.com/watch?v=dQw4w9WgXcQ&utm_source=twitter&feature=share
 ```
 
 Site-aware functional params are always kept — for example `v`, `t`, and `list` on YouTube; `q` on Google, Bing, and DuckDuckGo; `keywords` on Amazon. For sites without a known functional param set, only params in the tracking denylist are removed.
+
+![justtheurl+ stripping known tracking query params from a URL](assets/screenshot-plus.png)
 
 In both modes the cleaned URL is automatically copied to your clipboard the moment you paste. On mobile the full flow is a single tap: **Paste → done**.
 
