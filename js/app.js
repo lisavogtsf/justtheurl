@@ -29,7 +29,7 @@ export function initApp(doc) {
     if (state === "stripped" && warn) {
       const href = "plus/?url=" + encodeURIComponent(rawUrl);
       statusEl.innerHTML =
-        `⚠ Stripping may break this URL — <a href="${href}" class="warn-link">try the smarter version →</a>`;
+        `⚠ Stripping may break this URL — <a href="${href}" class="warn-link">try justtheurl+ →</a>`;
     } else if (state === "stripped" && paramCount > 0) {
       statusEl.textContent = paramCount === 1 ? "1 param removed" : `${paramCount} params removed`;
     } else if (state === "clean") {

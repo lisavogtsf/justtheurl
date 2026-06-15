@@ -568,6 +568,13 @@ describe('warn-domain status', () => {
     expect(link.getAttribute('href')).toContain('plus/');
   });
 
+  it('warning link text reads "try justtheurl+ →"', () => {
+    const doc = setupDoc();
+    typeUrl(doc, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&utm_source=newsletter');
+    const link = doc.querySelector('.url-status a');
+    expect(link.textContent).toBe('try justtheurl+ →');
+  });
+
   it('warning link encodes the original URL as a url= query param', () => {
     const originalUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&utm_source=newsletter';
     const doc = setupDoc();
